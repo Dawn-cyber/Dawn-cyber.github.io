@@ -178,7 +178,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-10 02:27:33" itemprop="dateModified" datetime="2023-08-10T02:27:33+08:00">2023-08-10</time>
+                <time title="修改时间：2023-08-14 00:48:52" itemprop="dateModified" datetime="2023-08-14T00:48:52+08:00">2023-08-14</time>
               </span>
 
           
@@ -208,10 +208,10 @@
 <p>面向服务：微服务对外暴露业务接口</p>
 <p>自治：团队独立，技术独立，数据独立，部署独立</p>
 <p>隔离性强：服务调用做好隔离，容错，降级，避免出现级联问题</p>
-<h3 id="微服务技术对比："><a href="#微服务技术对比：" class="headerlink" title="微服务技术对比："></a>微服务技术对比：</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20221117214336117.png" alt="image-20221117214336117"></p>
+<h3 id="微服务技术对比："><a href="#微服务技术对比：" class="headerlink" title="微服务技术对比："></a>微服务技术对比：</h3><p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20221117214336117.png" alt="image-20221117214336117"></p>
 <h3 id="SpringCloud："><a href="#SpringCloud：" class="headerlink" title="SpringCloud："></a>SpringCloud：</h3><p>目前使用最广泛的微服务框架</p>
 <p>SpringCloud集成了各种微服务组件，并做了自动装配，十分方便。</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20221117214744817.png" alt="image-20221117214744817"></p>
+<p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20221117214744817.png" alt="image-20221117214744817"></p>
 <h3 id="服务拆分及远程调用："><a href="#服务拆分及远程调用：" class="headerlink" title="服务拆分及远程调用："></a>服务拆分及远程调用：</h3><p>服务拆分注意事项：</p>
 <p>1.不同微服务，不要重复开发相同业务</p>
 <p>2.微服务数据独立，不要访问其他微服务的数据库</p>
@@ -248,8 +248,8 @@
 <p>2.在order-service项目的启动类OrderApplication中的RestTemplate添加负载均衡注解：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">@LoadBalanced</span><br><span class="line">public RestTemplate restTemplate()&#123;</span><br><span class="line">	return new RestTemplate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="Ribbon负载均衡"><a href="#Ribbon负载均衡" class="headerlink" title="Ribbon负载均衡"></a>Ribbon负载均衡</h2><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\image-20221118110239295.png" alt="image-20221118110239295"></p>
-<h3 id="负载均衡策略："><a href="#负载均衡策略：" class="headerlink" title="负载均衡策略："></a>负载均衡策略：</h3><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\image-20221118110432121.png" alt="image-20221118110432121"></p>
+<h2 id="Ribbon负载均衡"><a href="#Ribbon负载均衡" class="headerlink" title="Ribbon负载均衡"></a>Ribbon负载均衡</h2><p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/Apple\项目\研究生课程资料\Typora\图片\image-20221118110239295.png" alt="image-20221118110239295"></p>
+<h3 id="负载均衡策略："><a href="#负载均衡策略：" class="headerlink" title="负载均衡策略："></a>负载均衡策略：</h3><p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/Apple\项目\研究生课程资料\Typora\图片\image-20221118110432121.png" alt="image-20221118110432121"></p>
 <p>通过IRule实现可以修改负载均衡规则，有两种方式：</p>
 <p>1.代码方式：在order-service中OrderApplication类中，定义一个新的IRule：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">public IRule randoRule()&#123;</span><br><span class="line">	return new RandomRule();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -317,7 +317,7 @@
 <p>请求路径：&#x2F;usr&#x2F;{id}</p>
 <p>请求参数： Long id</p>
 <p>返回值类型： User</p>
-<h3 id="自定义Feign的配置"><a href="#自定义Feign的配置" class="headerlink" title="自定义Feign的配置"></a>自定义Feign的配置</h3><p><img src="C:\Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20221119103505499.png" alt="image-20221119103505499"></p>
+<h3 id="自定义Feign的配置"><a href="#自定义Feign的配置" class="headerlink" title="自定义Feign的配置"></a>自定义Feign的配置</h3><p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20221119103505499.png" alt="image-20221119103505499"></p>
 <h3 id="Feign的性能优化"><a href="#Feign的性能优化" class="headerlink" title="Feign的性能优化"></a>Feign的性能优化</h3><p>Feign底层的客户端实现：</p>
 <p>URLConnection：默认实现，不支持连接池</p>
 <p>Apache HttpClient： 支持连接池</p>
@@ -373,7 +373,7 @@
 
 <p>配置国内镜像</p>
 <p>参考国内阿里云的镜像加速文档：<a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors">https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors</a></p>
-<h3 id="Docker基本操作"><a href="#Docker基本操作" class="headerlink" title="Docker基本操作"></a>Docker基本操作</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20221219111044609.png" alt="image-20221219111044609"></p>
+<h3 id="Docker基本操作"><a href="#Docker基本操作" class="headerlink" title="Docker基本操作"></a>Docker基本操作</h3><p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20221219111044609.png" alt="image-20221219111044609"></p>
 <h4 id="容器相关命令"><a href="#容器相关命令" class="headerlink" title="容器相关命令"></a>容器相关命令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker pause</span><br><span class="line">docker unpause</span><br><span class="line">docker stop</span><br><span class="line">docker start</span><br></pre></td></tr></table></figure>
 
 <p>案例：</p>
@@ -477,7 +477,7 @@
 <p>执行下面命令：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">-e RABBITMQ_DEFAULT_USER=qian \</span><br><span class="line">-e RABBITMQ_DEFAULT_PASS=1126 \</span><br><span class="line">--name mq \</span><br><span class="line">--hostname mq1 \</span><br><span class="line">-p 15672:15672 \</span><br><span class="line">-p 5672:5672 \</span><br><span class="line">-d \</span><br><span class="line">rabbitmq:3-management</span><br></pre></td></tr></table></figure>
 
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230313161341123.png" alt="image-20230313161341123"></p>
+<p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20230313161341123.png" alt="image-20230313161341123"></p>
 <p>常见的消息模型：</p>
 <p>MQ的官方文档中给出了5个MQ的Demo示例，对应了以下不用用法：</p>
 <p>1.基本消息队列(BasicQueue)</p>
@@ -617,11 +617,11 @@
 
 <h4 id="数据同步："><a href="#数据同步：" class="headerlink" title="数据同步："></a>数据同步：</h4><p>elasticsearch中的数据来自于mysql，因此mysql数据发生改变时，elasticsearch也必须改变，即数据同步</p>
 <p>方案一：同步调用</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230327162941480.png" alt="image-20230327162941480"></p>
+<p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20230327162941480.png" alt="image-20230327162941480"></p>
 <p>方案二：</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230327163140280.png" alt="image-20230327163140280"></p>
+<p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20230327163140280.png" alt="image-20230327163140280"></p>
 <p>方案三：监听binlog</p>
-<p><img src="C:\Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20230327163230858.png" alt="image-20230327163230858"></p>
+<p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20230327163230858.png" alt="image-20230327163230858"></p>
 <h3 id="elasticsearch集群："><a href="#elasticsearch集群：" class="headerlink" title="elasticsearch集群："></a>elasticsearch集群：</h3><p>海量数据存储问题：将索引库从逻辑上拆分为N个分片，存储到多个节点</p>
 <p>单点故障问题：将分片数据在不同节点备份</p>
 <h2 id="微服务保护"><a href="#微服务保护" class="headerlink" title="微服务保护"></a>微服务保护</h2><h3 id="初识Sentinel："><a href="#初识Sentinel：" class="headerlink" title="初识Sentinel："></a>初识Sentinel：</h3><p>雪崩问题以及解决方案：</p>
@@ -768,12 +768,12 @@
 <p>三个实例没有任何关系，配置主从可以使用replicaof 或者slaveof 命令</p>
 <p>有临时和永久两种模式：</p>
 <p>修改配置文件（永久生效）</p>
-<p>​	在redis.conf中添加一行配置：slaveof <masterip> <masterport></p>
+<p>​	在redis.conf中添加一行配置：slaveof <masterip> <masterport></masterport></masterip></p>
 <p>使用redis-cli客户端连接到redis服务，执行slaveof命令（重启后失效）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slaveof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure>
 
 <h4 id="数据同步原理："><a href="#数据同步原理：" class="headerlink" title="数据同步原理："></a>数据同步原理：</h4><p>主从第一步同步是全量同步，slave重启后，则执行增量同步。</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230402200837162.png" alt="image-20230402200837162"></p>
+<p><img src="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/MyBlog\图片\image-20230402200837162.png" alt="image-20230402200837162"></p>
 <p>master怎么判断slave是不是第一次同步数据？</p>
 <p>Replication Id: 数据集的标记，id一致则说明是同一数据集。每一个master都有唯一的id，slave则会集成master节点的id</p>
 <p>offset: 偏移量，随着记录在repl_baklog中的数据增多而逐渐增大。slave完成同步时会记录当前同步的offset。如果slave的offset小于master的offset，则说明slave数据落后于mater，需要更新</p>
@@ -791,7 +791,7 @@
 <p>​	最后判断slave节点的运行id大小，越小优先级越高</p>
 <p>故障转移：</p>
 <p>​	sentinel给备选的slave1节点发送 slaveof no one命令，使其成为master</p>
-<p>​	sentinel给所有其他的slave发送slaveof <masterip> <masterport>，配置主从关系</p>
+<p>​	sentinel给所有其他的slave发送slaveof <masterip> <masterport>，配置主从关系</masterport></masterip></p>
 <p>​	最后，sentinel将故障节点标记未slave，当故障节点恢复后会自动成为新的master的slave节点</p>
 <h4 id="搭建哨兵结构："><a href="#搭建哨兵结构：" class="headerlink" title="搭建哨兵结构："></a>搭建哨兵结构：</h4><p>搭建一个三节点形成的Sentinel集群，来监管之前的Redis主从集群。</p>
 <p>准备三个Sentinel实例，配置ip地址和端口，PORT 为27001、27002、27003</p>
@@ -1069,10 +1069,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-08-13 23:50:59 / 修改时间：23:50:50" itemprop="dateCreated datePublished" datetime="2023-08-13T23:50:59+08:00">2023-08-13</time>
+              <time title="创建时间：2023-08-13 23:50:59" itemprop="dateCreated datePublished" datetime="2023-08-13T23:50:59+08:00">2023-08-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-14 00:48:02" itemprop="dateModified" datetime="2023-08-14T00:48:02+08:00">2023-08-14</time>
+              </span>
 
           
 
@@ -1085,20 +1091,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="链表算法"><a href="#链表算法" class="headerlink" title="链表算法"></a>链表算法</h2><h3 id="双指针法："><a href="#双指针法：" class="headerlink" title="双指针法："></a>双指针法：</h3><h4 id="合并有序链表："><a href="#合并有序链表：" class="headerlink" title="合并有序链表："></a>合并有序链表：</h4><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title.jpg" alt="img"></p>
+          <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="链表算法"><a href="#链表算法" class="headerlink" title="链表算法"></a>链表算法</h2><h3 id="双指针法："><a href="#双指针法：" class="headerlink" title="双指针法："></a>双指针法：</h3><h4 id="合并有序链表："><a href="#合并有序链表：" class="headerlink" title="合并有序链表："></a>合并有序链表：</h4><p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/MyBlog\图片\title.jpg" alt="img"></p>
 <p>虚拟头结点法：</p>
 <p>避免处理空指针的情况，降低代码的复杂性</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ListNode dumpy = new ListNode(-1);</span><br><span class="line">dumpy.next = head;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ListNode <span class="title function_">mergeTwoLists</span><span class="params">(ListNode l1,ListNode l2)</span>&#123;</span><br><span class="line">    <span class="comment">//虚拟头结点</span></span><br><span class="line">    <span class="type">ListNode</span> <span class="variable">dumpy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(-<span class="number">1</span>),p = dumpy;</span><br><span class="line">    <span class="type">ListNode</span> <span class="variable">p1</span> <span class="operator">=</span> l1,p2=l2;</span><br><span class="line">    <span class="keyword">while</span>(p1!=<span class="literal">null</span>&amp;&amp;p2!=<span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(p1.val&gt;p2.val)&#123;</span><br><span class="line">            p.next =p2;</span><br><span class="line">            p2 = p2.next;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            p.next = p1;</span><br><span class="line">            p1  = p1.next;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//合并剩余的链表</span></span><br><span class="line">    p.next = (p1==<span class="literal">null</span>)?p2:p1;</span><br><span class="line">    retrun dumpy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="合并k个有序链表："><a href="#合并k个有序链表：" class="headerlink" title="合并k个有序链表："></a>合并k个有序链表：</h4><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\title2.jpg" alt="img"></p>
+<h4 id="合并k个有序链表："><a href="#合并k个有序链表：" class="headerlink" title="合并k个有序链表："></a>合并k个有序链表：</h4><p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/MyBlog\图片\title2.jpg" alt="img"></p>
 <p>类似合并两个链表的情况，但是需要高效找到最小的节点，这里使用优先级队列（二叉堆），把节点放入最小堆中，就可以每次获得k个节点中的最小节点</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ListNode mergeKLists(ListNode[] lists)&#123;</span><br><span class="line">	if(lists.length==0) return null;</span><br><span class="line">	ListNode dumpy = new ListNode(-1);</span><br><span class="line">	ListNode p = dumpy;</span><br><span class="line">	</span><br><span class="line">	//优先级队列</span><br><span class="line">	PriorityQueue&lt;ListNode&gt; pq = new PriorityQueue&lt;&gt;(</span><br><span class="line">		lists.length,(a,b)-&gt;(a.val-b.val)</span><br><span class="line">	);</span><br><span class="line">	for(ListNode head:lists)&#123;</span><br><span class="line">		if(head!=null)&#123;</span><br><span class="line">			pq.add(head);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	while(!pq.isEmpty())&#123;</span><br><span class="line">		ListNode node = pq.poll();</span><br><span class="line">		p.next = node;</span><br><span class="line">		if(node.next!=null)&#123;</span><br><span class="line">			pq.add(node.next);</span><br><span class="line">		&#125;</span><br><span class="line">		p = p.next;</span><br><span class="line">	&#125;</span><br><span class="line">	return dumpy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<h4 id="拆分链表："><a href="#拆分链表：" class="headerlink" title="拆分链表："></a>拆分链表：</h4><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\title4.jpg" alt="img"></p>
+<h4 id="拆分链表："><a href="#拆分链表：" class="headerlink" title="拆分链表："></a>拆分链表：</h4><p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/MyBlog\图片\title4.jpg" alt="img"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ListNode partition(ListNode head,int x)&#123;</span><br><span class="line">	ListNode dumpy1 = new ListNode(-1);</span><br><span class="line">	ListNode dumpy2 = new ListNode(-1);</span><br><span class="line">	</span><br><span class="line">	ListNode p1 = dumpy1,p2 = dumpy2;</span><br><span class="line">	ListNode p = head;</span><br><span class="line">	while(p!=null)&#123;</span><br><span class="line">		if(p.val&gt;=x)&#123;</span><br><span class="line">			p2.next = p;</span><br><span class="line">			p2 = p2.next;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			p1.next = p;</span><br><span class="line">			p1 = p1.next;</span><br><span class="line">		&#125;</span><br><span class="line">		//断开每个节点的指针</span><br><span class="line">		ListNode temp = p.next;</span><br><span class="line">		p.next = null;</span><br><span class="line">		p = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	p1.next = dumpy2.next;</span><br><span class="line">	return dumpy1.next;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="单链表的倒数第k个节点："><a href="#单链表的倒数第k个节点：" class="headerlink" title="单链表的倒数第k个节点："></a>单链表的倒数第k个节点：</h4><p>从n个节点，倒数第k个节点就是正数第n-k+1个节点，也是一个for循环，时间复杂度O（n)</p>
@@ -1131,14 +1137,14 @@
 
 <p>3.双指针找到中点，然后反转后半部分链表，进行比较</p>
 <h2 id="数组算法"><a href="#数组算法" class="headerlink" title="数组算法"></a>数组算法</h2><h3 id="双指针法：-1"><a href="#双指针法：-1" class="headerlink" title="双指针法："></a>双指针法：</h3><h4 id="快慢指针："><a href="#快慢指针：" class="headerlink" title="快慢指针："></a>快慢指针：</h4><p>去重，移除某元素</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\title26.png" alt="img"></p>
+<p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/MyBlog\图片\title26.png" alt="img"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">int removeDuplicates(int[] nums)&#123;</span><br><span class="line">	if(nums.length==0)&#123;</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	int slow=0,fast=0;</span><br><span class="line">	while(fast&lt;nums.length)&#123;</span><br><span class="line">		if(nums[fast]!=nums[slow])&#123;</span><br><span class="line">			slow++;</span><br><span class="line">			nums[slow]= nums[fast];</span><br><span class="line">		&#125;</span><br><span class="line">		fast++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="左右指针："><a href="#左右指针：" class="headerlink" title="左右指针："></a>左右指针：</h4><p>1.二分查找</p>
 <p>2.两数之和</p>
 <p>3.反转数组</p>
 <p>4.回文判断</p>
-<h3 id="前缀和："><a href="#前缀和：" class="headerlink" title="前缀和："></a>前缀和：</h3><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title304.png" alt="img"></p>
+<h3 id="前缀和："><a href="#前缀和：" class="headerlink" title="前缀和："></a>前缀和：</h3><p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/Apple\项目\研究生课程资料\Typora\图片\title304.png" alt="img"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class NumMatrix &#123;</span><br><span class="line">    // 定义：preSum[i][j] 记录 matrix 中子矩阵 [0, 0, i-1, j-1] 的元素和</span><br><span class="line">    private int[][] preSum;</span><br><span class="line">    </span><br><span class="line">    public NumMatrix(int[][] matrix) &#123;</span><br><span class="line">        int m = matrix.length, n = matrix[0].length;</span><br><span class="line">        if (m == 0 || n == 0) return;</span><br><span class="line">        // 构造前缀和矩阵</span><br><span class="line">        preSum = new int[m + 1][n + 1];</span><br><span class="line">        for (int i = 1; i &lt;= m; i++) &#123;</span><br><span class="line">            for (int j = 1; j &lt;= n; j++) &#123;</span><br><span class="line">                // 计算每个矩阵 [0, 0, i, j] 的元素和</span><br><span class="line">                preSum[i][j] = preSum[i-1][j] + preSum[i][j-1] + matrix[i - 1][j - 1] - preSum[i-1][j-1];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 计算子矩阵 [x1, y1, x2, y2] 的元素和</span><br><span class="line">    public int sumRegion(int x1, int y1, int x2, int y2) &#123;</span><br><span class="line">        // 目标矩阵之和由四个相邻矩阵运算获得</span><br><span class="line">        return preSum[x2+1][y2+1] - preSum[x1][y2+1] - preSum[x2+1][y1] + preSum[x1][y1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h3 id="差分数组："><a href="#差分数组：" class="headerlink" title="差分数组："></a>差分数组：</h3><p>差分数组的主要适用场景是频繁对原始数组的某个区间的元素进行增减</p>
@@ -1146,7 +1152,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int[] diff = new int[nums.length];</span><br><span class="line">// 构造差分数组</span><br><span class="line">diff[0] = nums[0];</span><br><span class="line">for (int i = 1; i &lt; nums.length; i++) &#123;</span><br><span class="line">    diff[i] = nums[i] - nums[i - 1];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这样就可以快速进行区间增减操作，例如对区间nums[i….j]的元素全部加3，可以让diff[i]+&#x3D;3,diff[j+1]-&#x3D;3即可</p>
-<p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title1109.png" alt="img"></p>
+<p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/Apple\项目\研究生课程资料\Typora\图片\title1109.png" alt="img"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">int[] corpFlightBookings(int[][] bookings, int n) &#123;</span><br><span class="line">    // nums 初始化为全 0</span><br><span class="line">    int[] nums = new int[n];</span><br><span class="line">    // 构造差分解法</span><br><span class="line">    Difference df = new Difference(nums);</span><br><span class="line"></span><br><span class="line">    for (int[] booking : bookings) &#123;</span><br><span class="line">        // 注意转成数组索引要减一哦</span><br><span class="line">        int i = booking[0] - 1;</span><br><span class="line">        int j = booking[1] - 1;</span><br><span class="line">        int val = booking[2];</span><br><span class="line">        // 对区间 nums[i..j] 增加 val</span><br><span class="line">        df.increment(i, j, val);</span><br><span class="line">    &#125;</span><br><span class="line">    // 返回最终的结果数组</span><br><span class="line">    return df.result();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 差分数组工具类</span><br><span class="line">class Difference &#123;</span><br><span class="line">    // 差分数组</span><br><span class="line">    private int[] diff;</span><br><span class="line">    </span><br><span class="line">    /* 输入一个初始数组，区间操作将在这个数组上进行 */</span><br><span class="line">    public Difference(int[] nums) &#123;</span><br><span class="line">        assert nums.length &gt; 0;</span><br><span class="line">        diff = new int[nums.length];</span><br><span class="line">        // 根据初始数组构造差分数组</span><br><span class="line">        diff[0] = nums[0];</span><br><span class="line">        for (int i = 1; i &lt; nums.length; i++) &#123;</span><br><span class="line">            diff[i] = nums[i] - nums[i - 1];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* 给闭区间 [i, j] 增加 val（可以是负数）*/</span><br><span class="line">    public void increment(int i, int j, int val) &#123;</span><br><span class="line">        diff[i] += val;</span><br><span class="line">        if (j + 1 &lt; diff.length) &#123;</span><br><span class="line">            diff[j + 1] -= val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* 返回结果数组 */</span><br><span class="line">    public int[] result() &#123;</span><br><span class="line">        int[] res = new int[diff.length];</span><br><span class="line">        // 根据差分数组构造结果数组</span><br><span class="line">        res[0] = diff[0];</span><br><span class="line">        for (int i = 1; i &lt; diff.length; i++) &#123;</span><br><span class="line">            res[i] = res[i - 1] + diff[i];</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="二维数组的花式遍历："><a href="#二维数组的花式遍历：" class="headerlink" title="二维数组的花式遍历："></a>二维数组的花式遍历：</h3><p>顺时针旋转矩阵：</p>
@@ -1156,7 +1162,7 @@
 <p>核心思路是按照右，下左，上的顺序遍历数组，并使用四个变量圈定未遍历元素的边界</p>
 <h3 id="滑动窗口算法："><a href="#滑动窗口算法：" class="headerlink" title="滑动窗口算法："></a>滑动窗口算法：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">/* 滑动窗口算法框架 */</span><br><span class="line">void slidingWindow(string s) &#123;</span><br><span class="line">    Map&lt;char, int&gt; window;</span><br><span class="line">    </span><br><span class="line">    int left = 0, right = 0;</span><br><span class="line">    while (right &lt; s.size()) &#123;</span><br><span class="line">        // c 是将移入窗口的字符</span><br><span class="line">        char c = s[right];</span><br><span class="line">        // 增大窗口</span><br><span class="line">        right++;</span><br><span class="line">        // 进行窗口内数据的一系列更新</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        /*** debug 输出的位置 ***/</span><br><span class="line">        printf(&quot;window: [%d, %d)\n&quot;, left, right);</span><br><span class="line">        /********************/</span><br><span class="line">        </span><br><span class="line">        // 判断左侧窗口是否要收缩</span><br><span class="line">        while (window needs shrink) &#123;</span><br><span class="line">            // d 是将移出窗口的字符</span><br><span class="line">            char d = s[left];</span><br><span class="line">            // 缩小窗口</span><br><span class="line">            left++;</span><br><span class="line">            // 进行窗口内数据的一系列更新</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title76.png" alt="img"></p>
+<p><img src="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/Apple\项目\研究生课程资料\Typora\图片\title76.png" alt="img"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    </span><br><span class="line">    public String minWindow(String s, String t) &#123;</span><br><span class="line">        HashMap&lt;Character,Integer&gt; hs = new HashMap&lt;Character,Integer&gt;();</span><br><span class="line">        HashMap&lt;Character,Integer&gt; ht = new HashMap&lt;Character,Integer&gt;();</span><br><span class="line">        for(int i = 0;i &lt; t.length();i ++)&#123;</span><br><span class="line">            ht.put(t.charAt(i),ht.getOrDefault(t.charAt(i), 0) + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        String ans = &quot;&quot;;</span><br><span class="line">        int len = Integer.MAX_VALUE,cnt = 0,start = 0;</span><br><span class="line">        int left =0,right=0;</span><br><span class="line">        while(right&lt;s.length())&#123;</span><br><span class="line">            char c = s.charAt(right);</span><br><span class="line">            right++;</span><br><span class="line">            if(ht.containsKey(c))&#123;</span><br><span class="line">                hs.put(c,hs.getOrDefault(c,0)+1);</span><br><span class="line">                if (hs.get(c).equals(ht.get(c)))</span><br><span class="line">                    cnt++;</span><br><span class="line">            &#125;</span><br><span class="line">            while(cnt==ht.size())&#123;</span><br><span class="line">                if (right - left &lt; len) &#123;</span><br><span class="line">                    start = left;</span><br><span class="line">                    len = right - left;</span><br><span class="line">                &#125;</span><br><span class="line">            </span><br><span class="line">                char d = s.charAt(left);</span><br><span class="line">                // 缩小窗口</span><br><span class="line">                left++;</span><br><span class="line">                // 进行窗口内数据的一系列更新</span><br><span class="line">                if (ht.containsKey(d)) &#123;</span><br><span class="line">                    if (hs.get(d).equals(ht.get(d)))</span><br><span class="line">                        cnt--;</span><br><span class="line">                    hs.put(d,hs.get(d)-1);</span><br><span class="line">                &#125;   </span><br><span class="line">            &#125;   </span><br><span class="line">        &#125;</span><br><span class="line">        return len == Integer.MAX_VALUE ? &quot;&quot; : s.substring(start, start+len); </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="二分搜索："><a href="#二分搜索：" class="headerlink" title="二分搜索："></a>二分搜索：</h3><p>二分查找不要出现else，而是把所有的情况用else if写清楚，这样可以清楚地展现所有细节。</p>
@@ -1629,7 +1635,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-17 21:05:47" itemprop="dateModified" datetime="2022-11-17T21:05:47+08:00">2022-11-17</time>
+                <time title="修改时间：2023-08-14 00:46:18" itemprop="dateModified" datetime="2023-08-14T00:46:18+08:00">2023-08-14</time>
               </span>
 
           
@@ -2074,7 +2080,7 @@
 
 <h2 id="存储引擎特点"><a href="#存储引擎特点" class="headerlink" title="存储引擎特点"></a>存储引擎特点</h2><h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>特点：</p>
 <p>事务，行级锁，外键</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220729154511649.png" alt="image-20220729154511649"></p>
+<p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220729154511649.png" alt="image-20220729154511649"></p>
 <h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>特点</p>
 <p>不支持事务，不支持外键，</p>
 <p>支持表锁，不支持行锁</p>
@@ -2116,9 +2122,9 @@
 <td>是一种通过建立倒排索引，快速匹配文档的方式。类似于Lucene，Solr,ES</td>
 </tr>
 </tbody></table>
-<h3 id="B-Tree（多路平衡查找树）"><a href="#B-Tree（多路平衡查找树）" class="headerlink" title="B-Tree（多路平衡查找树）"></a>B-Tree（多路平衡查找树）</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220729162125455.png" alt="image-20220729162125455"></p>
-<h3 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+Tree"></a>B+Tree</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220729162534758.png" alt="image-20220729162534758"></p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220729162645274.png" alt="image-20220729162645274"></p>
+<h3 id="B-Tree（多路平衡查找树）"><a href="#B-Tree（多路平衡查找树）" class="headerlink" title="B-Tree（多路平衡查找树）"></a>B-Tree（多路平衡查找树）</h3><p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220729162125455.png" alt="image-20220729162125455"></p>
+<h3 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+Tree"></a>B+Tree</h3><p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220729162534758.png" alt="image-20220729162534758"></p>
+<p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220729162645274.png" alt="image-20220729162645274"></p>
 <h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><p>哈希索引就是采用一定hash算法，将键值换算成新的hash值，映射到对应的槽位上，然后存储在hash表中。</p>
 <p>如果两个（或多个键值），映射到同一个槽位上，他们就产生了hash冲突，通过链表解决。</p>
 <p>特点：</p>
@@ -2227,7 +2233,7 @@
 
 <p>（3）主键顺序插入</p>
 <h3 id="大批量插入数据"><a href="#大批量插入数据" class="headerlink" title="大批量插入数据"></a>大批量插入数据</h3><p>使用load指令进行插入</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220729203238888.png" alt="image-20220729203238888"></p>
+<p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220729203238888.png" alt="image-20220729203238888"></p>
 <h2 id="主键优化"><a href="#主键优化" class="headerlink" title="主键优化"></a>主键优化</h2><h3 id="数据组织方式"><a href="#数据组织方式" class="headerlink" title="数据组织方式"></a>数据组织方式</h3><p>在InnoDB存储引擎中，表数据都是根据主键顺序组织存放地，这种存储方式地表称为索引组织表</p>
 <h3 id="页分裂"><a href="#页分裂" class="headerlink" title="页分裂"></a>页分裂</h3><p>页可以为空，也可以填充一半，也可以填充100%。每个页包含了2-N行数据，根据主键排序。</p>
 <p>主键乱序会插入会造成页分裂</p>
@@ -2309,7 +2315,7 @@
 
 <h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if 条件1 then</span><br><span class="line">	....</span><br><span class="line">elseif 条件2 then</span><br><span class="line">	....</span><br><span class="line">else</span><br><span class="line">	....</span><br><span class="line">end if;</span><br></pre></td></tr></table></figure>
 
-<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220730125527750.png" alt="image-20220730125527750"></p>
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220730125527750.png" alt="image-20220730125527750"></p>
 <h3 id="while"><a href="#while" class="headerlink" title="while"></a>while</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">while 条件 do</span><br><span class="line">	sql语句</span><br><span class="line">endwhile;</span><br></pre></td></tr></table></figure>
 
 <h3 id="repeat"><a href="#repeat" class="headerlink" title="repeat"></a>repeat</h3><p>当满足条件退出循环</p>
@@ -2414,9 +2420,9 @@
 <td>ReadView创建者的事务ID</td>
 </tr>
 </tbody></table>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220730220458786.png" alt="image-20220730220458786"></p>
+<p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220730220458786.png" alt="image-20220730220458786"></p>
 <h1 id="MySQL管理"><a href="#MySQL管理" class="headerlink" title="MySQL管理"></a>MySQL管理</h1><h2 id="系统数据库"><a href="#系统数据库" class="headerlink" title="系统数据库"></a>系统数据库</h2><p>自带四个数据库，具体作用如下：</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220730221717911.png" alt="image-20220730221717911"></p>
+<p><img src="/2023/08/13/SQL%E8%AF%AD%E5%8F%A5%EF%BC%9A/MyBlog\图片\image-20220730221717911.png" alt="image-20220730221717911"></p>
 <h1 id="运维"><a href="#运维" class="headerlink" title="运维"></a>运维</h1><h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><h3 id="错误日志"><a href="#错误日志" class="headerlink" title="错误日志"></a>错误日志</h3><p>记录了当mysql启动和停止时，以及服务器在运行过程中发生任何严重错误时的相关信息</p>
 <p>默认开启，默认存放目录&#x2F;var&#x2F;log&#x2F;mysqld.log</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show variables like &#x27;%log_error%&#x27; --!查看日志位置</span><br></pre></td></tr></table></figure>
@@ -2526,7 +2532,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-07-01 13:41:03" itemprop="dateModified" datetime="2023-07-01T13:41:03+08:00">2023-07-01</time>
+                <time title="修改时间：2023-08-14 00:43:52" itemprop="dateModified" datetime="2023-08-14T00:43:52+08:00">2023-08-14</time>
               </span>
 
           
@@ -2540,7 +2546,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h1><h2 id="Java的基础"><a href="#Java的基础" class="headerlink" title="Java的基础"></a>Java的基础</h2><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0pvdXJXb24vaW1hZ2UvbWFzdGVyL0phdmElRTUlOUYlQkElRTclQTElODAlRTglQUYlQUQlRTYlQjMlOTUvSmF2YSVFNSU5RiVCQSVFNiU5QyVBQyVFNiU5NSVCMCVFNiU4RCVBRSVFNyVCMSVCQiVFNSU5RSU4Qi5wbmc.png"></p>
+          <h1 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h1><h2 id="Java的基础"><a href="#Java的基础" class="headerlink" title="Java的基础"></a>Java的基础</h2><p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0pvdXJXb24vaW1hZ2UvbWFzdGVyL0phdmElRTUlOUYlQkElRTclQTElODAlRTglQUYlQUQlRTYlQjMlOTUvSmF2YSVFNSU5RiVCQSVFNiU5QyVBQyVFNiU5NSVCMCVFNiU4RCVBRSVFNyVCMSVCQiVFNSU5RSU4Qi5wbmc.png"></p>
 <p>String类：不可修改，底层用final修饰，不可变</p>
 <p>StringBuilder：可以修改，没有用final修饰，线程不安全，效率高</p>
 <p>StringBuffer：可以修改，没有用final修饰，线程安全，效率低</p>
@@ -2692,7 +2698,7 @@
 <p>CLH是一种基于链表的可扩展、高性能、公平的自旋锁，申请线程只在本地变量上自旋，它不断轮询前驱的状态，如果发现前驱释放了锁就结束自旋。</p>
 <p><strong>具体流程：</strong></p>
 <p>CLH队列中的节点QNode中含有一个locked字段，该字段若为true表示该线程需要获取锁，且不释放锁，为false表示线程释放了锁。节点之间通过隐形的链表相连(节点间没有明显的next指针)，通过myPred所指向的节点的变化情况来影响myNode的行为。</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\a50f4bfbfbedab646e3082f0736ba6ca79311e22.png"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\a50f4bfbfbedab646e3082f0736ba6ca79311e22.png"></p>
 <h2 id="面向对象的三大特性"><a href="#面向对象的三大特性" class="headerlink" title="面向对象的三大特性"></a>面向对象的三大特性</h2><p>​	Java 面向对象编程三大特性：封装 继承 多态</p>
 <h4 id="封装："><a href="#封装：" class="headerlink" title="封装："></a>封装：</h4><p>隐藏对象的属性和实现细节，仅对外提供公共访问方式，将变化隔离，便于使用，提高复用性和安全性。</p>
 <h4 id="继承："><a href="#继承：" class="headerlink" title="继承："></a>继承：</h4><p>提高代码的复用性</p>
@@ -2717,7 +2723,7 @@
 <p>引用传递：指的是在方法调用时，传递的参数是按引用进行传递，其实传递的引用的地址，也就是变量所对应的内存空间的地址。传递的是值的引用，也就是说传递前和传递后都指向同一个引用（也就是同一个内存空间）。</p>
 <h3 id="强制转型："><a href="#强制转型：" class="headerlink" title="强制转型："></a>强制转型：</h3><p>例如：float f &#x3D; (float)3.4</p>
 <p>访问修饰符的使用情况：</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0pvdXJXb24vaW1hZ2UvbWFzdGVyL0phdmElRTUlOUYlQkElRTclQTElODAlRTglQUYlQUQlRTYlQjMlOTUvSmF2YSVFOCVBRSVCRiVFOSU5NyVBRSVFNCVCRiVBRSVFOSVBNSVCMCVFNyVBQyVBNi5wbmc.png"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0pvdXJXb24vaW1hZ2UvbWFzdGVyL0phdmElRTUlOUYlQkElRTclQTElODAlRTglQUYlQUQlRTYlQjMlOTUvSmF2YSVFOCVBRSVCRiVFOSU5NyVBRSVFNCVCRiVBRSVFOSVBNSVCMCVFNyVBQyVBNi5wbmc.png"></p>
 <h3 id="和-的区别："><a href="#和-的区别：" class="headerlink" title="&amp;和&amp;&amp;的区别："></a>&amp;和&amp;&amp;的区别：</h3><p>&amp;&amp;是短路运算，左边的表达式的值是false,就不用看右边的表达式</p>
 <h3 id="final-finally-finalize区别"><a href="#final-finally-finalize区别" class="headerlink" title="final finally finalize区别"></a>final finally finalize区别</h3><p>final可以修饰类、变量、方法，修饰类表示该类不能被继承、修饰方法表示该方法不能被重写、修饰变量表示该变量是一个常量不能被重新赋值。<br>finally一般作用在try-catch代码块中，在处理异常的时候，通常我们将一定要执行的代码方法finally代码块中，表示不管是否出现异常，该代码块都会执行，一般用来存放一些关闭资源的代码。<br>finalize是一个方法，属于Object类的一个方法，而Object类是所有类的父类，该方法一般由垃圾回收器来调用，当我们调用System.gc() 方法的时候，由垃圾回收器调用finalize()，回收垃圾，一个对象是否可回收的最后判断。</p>
 <h3 id="this关键字的用法："><a href="#this关键字的用法：" class="headerlink" title="this关键字的用法："></a>this关键字的用法：</h3><p>this是自身的一个对象，代表对象本身，可以理解为：指向对象本身的一个指针。</p>
@@ -2837,7 +2843,7 @@
 <p>​	查看堆内存占用请款</p>
 <p>3.jconsole工具</p>
 <p>​	图形界面的，多功能的监测工具，可以连续监测</p>
-<h4 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5.方法区"></a>5.方法区</h4><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220802220651850.png" alt="image-20220802220651850"></p>
+<h4 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5.方法区"></a>5.方法区</h4><p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\image-20220802220651850.png" alt="image-20220802220651850"></p>
 <h5 id="方法区内存溢出"><a href="#方法区内存溢出" class="headerlink" title="方法区内存溢出"></a>方法区内存溢出</h5><p>1.8–java.lang.OutOfMemoryError:Metaspace</p>
 <p>1.8以前–java.lang.OutOfMemoryError:PermGen space</p>
 <h5 id="运行常量池"><a href="#运行常量池" class="headerlink" title="运行常量池"></a>运行常量池</h5><p>常量池就是一张表，虚拟机指令根据这张常量找到要执行的类名，方法名，参数类型，字面量等信息</p>
@@ -2865,13 +2871,13 @@
 <p>（3）复制</p>
 <h4 id="3-分代垃圾回收机制"><a href="#3-分代垃圾回收机制" class="headerlink" title="3.分代垃圾回收机制"></a>3.分代垃圾回收机制</h4><p>MinorGC 处理新生代</p>
 <p>FullGC 处理老年代和新生代</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220804143839334.png" alt="image-20220804143839334"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\image-20220804143839334.png" alt="image-20220804143839334"></p>
 <h4 id="4-垃圾回收器"><a href="#4-垃圾回收器" class="headerlink" title="4.垃圾回收器"></a>4.垃圾回收器</h4><p>4.1串行</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220804145417380.png" alt="image-20220804145417380"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\image-20220804145417380.png" alt="image-20220804145417380"></p>
 <p>4.2吞吐量</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220804145458929.png" alt="image-20220804145458929"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\image-20220804145458929.png" alt="image-20220804145458929"></p>
 <p>4.3响应时间优先</p>
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220804150033003.png" alt="image-20220804150033003"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\image-20220804150033003.png" alt="image-20220804150033003"></p>
 <p>4.4 G1</p>
 <p>适用场景：</p>
 <p>同时注重吞吐量和低延迟，默认的暂停目标是200ms</p>
@@ -2908,7 +2914,7 @@
 <p>kill 杀死进程</p>
 <p>Java：</p>
 <p>jps 命令查看所有的Java进程</p>
-<p>jstack <PID> 查看某个Java进程的所有线程状态</p>
+<p>jstack <PID> 查看某个Java进程的所有线程状态</PID></p>
 <p>jconsole 来查看某个Java进程中线程的运行情况</p>
 <h4 id="线程运行原理"><a href="#线程运行原理" class="headerlink" title="线程运行原理"></a>线程运行原理</h4><p>压栈</p>
 <h4 id="线程的方法"><a href="#线程的方法" class="headerlink" title="线程的方法"></a>线程的方法</h4><h5 id="run和start"><a href="#run和start" class="headerlink" title="run和start"></a>run和start</h5><p>start才会启动新的线程，run并不会</p>
@@ -2963,8 +2969,8 @@
 <h1 id="Maven："><a href="#Maven：" class="headerlink" title="Maven："></a>Maven：</h1><p>Maven安装配置：</p>
 <p>1.解压apache-maven-3.6.1.rar 既安装完成</p>
 <p>2.配置环境变量 MAVEN_HOME 为安装路径的bin目录</p>
-<p>3.配置本地仓库：修改 conf&#x2F;settings.xml 中的 <localRepository> 为一个指定目录</p>
-<p>4.配置阿里云私服： 修改conf&#x2F;settings.xml 中的 <mirrors> 标签，为其添加如下子标签</p>
+<p>3.配置本地仓库：修改 conf&#x2F;settings.xml 中的 <localRepository> 为一个指定目录</localRepository></p>
+<p>4.配置阿里云私服： 修改conf&#x2F;settings.xml 中的 <mirrors> 标签，为其添加如下子标签</mirrors></p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Maven-常用命令"><a href="#Maven-常用命令" class="headerlink" title="Maven 常用命令"></a>Maven 常用命令</h2><p>complie —    clean—-   package—-</p>
@@ -3011,7 +3017,7 @@
 <p>3.执行方法，测试</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据库表的字段名称和实体类的属性名称不一样，则不能自动封装数据</span><br></pre></td></tr></table></figure>
 
-<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20220617153339026.png" alt="image-20220617153339026"></p>
+<p><img src="/2023/08/13/java%E5%AD%A6%E4%B9%A0/MyBlog\图片\image-20220617153339026.png" alt="image-20220617153339026"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--数据库表的字段名称和实体类的属性名称不一样，则不能自动封装数据</span><br><span class="line"></span><br><span class="line">    1.解决方法：as 为实体类的属性名称</span><br><span class="line">        引用sql片段</span><br><span class="line">    2.使用resultMap</span><br><span class="line">    </span><br><span class="line">--&gt;</span><br><span class="line">&lt;resultMap id=&quot;brandResultMap&quot; type=&quot;Brand&quot;&gt;</span><br><span class="line">    &lt;result column=&quot;brand_name&quot; property=&quot;brandName&quot;/&gt;</span><br><span class="line">    &lt;result column=&quot;company_name&quot; property=&quot;companyName&quot; /&gt;</span><br><span class="line">&lt;/resultMap&gt;</span><br><span class="line"></span><br><span class="line">&lt;sql id = &quot;brand_column&quot;&gt;id,brand_name as brandName,company_name as companyName,ordered,description,status&lt;/sql&gt;</span><br><span class="line">&lt;select id=&quot;selectAll&quot; resultMap=&quot;brandResultMap&quot;&gt;</span><br><span class="line">    select * from tb_brand;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
 
 <h5 id="详细查询："><a href="#详细查询：" class="headerlink" title="详细查询："></a>详细查询：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line">    参数占位符：</span><br><span class="line">    1.#&#123;&#125; 会将其替换为 ？ 防止 sql注入</span><br><span class="line">    2.$&#123;&#125;  拼sql，会存在SQL注入</span><br><span class="line">    特殊字符的处理：</span><br><span class="line">        1.转移字符：&lt; - &amp;lt</span><br><span class="line">        2.CDATA区  &lt;![CDATA[ &lt; ]]&gt;</span><br><span class="line">    </span><br><span class="line">--&gt;</span><br><span class="line">&lt;select id=&quot;selectById&quot; resultMap=&quot;brandResultMap&quot;&gt;</span><br><span class="line">    select * from tb_brand where id = #&#123;id&#125;;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
@@ -3050,31 +3056,31 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><h1> ~ <h6></td>
+<td><h1> ~ <h6></h6></h1></td>
 <td>定义标题，h1最大，h6最小</td>
 </tr>
 <tr>
-<td><font></td>
+<td><font></font></td>
 <td>定义文本的字体，字体尺寸，字体颜色</td>
 </tr>
 <tr>
-<td><b></td>
+<td><b></b></td>
 <td>定义粗体文字</td>
 </tr>
 <tr>
-<td><i></td>
+<td><i></i></td>
 <td>定义斜体文字</td>
 </tr>
 <tr>
-<td><u></td>
+<td><u></u></td>
 <td>定义文本下划线</td>
 </tr>
 <tr>
-<td><center></td>
+<td><center></center></td>
 <td>定义文本居中</td>
 </tr>
 <tr>
-<td><p></td>
+<td><p></p></td>
 <td>定义段落</td>
 </tr>
 <tr>
@@ -3267,7 +3273,7 @@
 <p>​	不使用骨架：不选择 create from apachetype</p>
 <p>集成本地Tomcat：</p>
 <p>使用Tomcat Maven插件：</p>
-<p>在<plugins>中写下面代码，注意使用骨架时不能自动导包，把<pluginManagement>注释</p>
+<p>在<plugins>中写下面代码，注意使用骨架时不能自动导包，把<pluginManagement>注释</pluginManagement></plugins></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">  &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;2.2&lt;/version&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
 
 <h2 id="Servlet："><a href="#Servlet：" class="headerlink" title="Servlet："></a>Servlet：</h2><p>​	Java中提供的一门动态web资源开发技术</p>
@@ -3438,7 +3444,7 @@
 <p>4.创建mybatis-config.xml核心配置文件，UserMapper.xml映射文件，UserMapper接口</p>
 <h4 id="bug调试："><a href="#bug调试：" class="headerlink" title="bug调试："></a>bug调试：</h4><p>bug情况1：</p>
 <p>Caused by: org.xml.sax.SAXParseException； lineNumber: 1； columnNumber: 1； 前言中不允许有内容。</p>
-<p>​	检查<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=mybatis&spm=1001.2101.3001.7020">mybatis</a>-config.xml文件中<mapper resource="mapper\Mapper.xml"/>有没有引入对应的mapper.xml文件</p>
+<p>​	检查<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=mybatis&spm=1001.2101.3001.7020">mybatis</a>-config.xml文件中<mapper resource="mapper\Mapper.xml">有没有引入对应的mapper.xml文件</mapper></p>
 <h3 id="用户注册："><a href="#用户注册：" class="headerlink" title="用户注册："></a>用户注册：</h3><h4 id="流程分析：-1"><a href="#流程分析：-1" class="headerlink" title="流程分析："></a>流程分析：</h4><p>​	1.用户填写用户名，密码等，点击注册按钮，提交到RegisterServlet</p>
 <p>​	2.在RegisterServlet中使用MyBatis保存数据</p>
 <p>​	3，保存前，需要判断用户名是否已经存在</p>
