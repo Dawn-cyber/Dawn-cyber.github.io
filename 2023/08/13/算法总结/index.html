@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据结构链表算法双指针法：合并有序链表： 虚拟头结点法： 避免处理空指针的情况，降低代码的复杂性 12ListNode dumpy &#x3D; new ListNode(-1);dumpy.next &#x3D; head;  123456789101112131415161718ListNode mergeTwoLists(ListNode l1,ListNode l2)&amp;#123;    &#x2F;&#x2F;虚拟头结点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序乾">
+<meta property="og:url" content="http://example.com/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="程序乾">
+<meta property="og:description" content="数据结构链表算法双指针法：合并有序链表： 虚拟头结点法： 避免处理空指针的情况，降低代码的复杂性 12ListNode dumpy &#x3D; new ListNode(-1);dumpy.next &#x3D; head;  123456789101112131415161718ListNode mergeTwoLists(ListNode l1,ListNode l2)&amp;#123;    &#x2F;&#x2F;虚拟头结点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title.jpg">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title2.jpg">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title4.jpg">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title26.png">
+<meta property="og:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title304.png">
+<meta property="og:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title1109.png">
+<meta property="og:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title76.png">
+<meta property="article:published_time" content="2023-08-13T15:50:59.656Z">
+<meta property="article:modified_time" content="2023-08-13T15:50:50.198Z">
+<meta property="article:author" content="乾">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\title.jpg">
+
+<link rel="canonical" href="http://example.com/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | 程序乾</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">程序乾</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="乾">
+      <meta itemprop="description" content="写一个赚乾的程序">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序乾">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-08-13 23:50:59 / 修改时间：23:50:50" itemprop="dateCreated datePublished" datetime="2023-08-13T23:50:59+08:00">2023-08-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="链表算法"><a href="#链表算法" class="headerlink" title="链表算法"></a>链表算法</h2><h3 id="双指针法："><a href="#双指针法：" class="headerlink" title="双指针法："></a>双指针法：</h3><h4 id="合并有序链表："><a href="#合并有序链表：" class="headerlink" title="合并有序链表："></a>合并有序链表：</h4><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title.jpg" alt="img"></p>
+<p>虚拟头结点法：</p>
+<p>避免处理空指针的情况，降低代码的复杂性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ListNode dumpy = new ListNode(-1);</span><br><span class="line">dumpy.next = head;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ListNode <span class="title function_">mergeTwoLists</span><span class="params">(ListNode l1,ListNode l2)</span>&#123;</span><br><span class="line">    <span class="comment">//虚拟头结点</span></span><br><span class="line">    <span class="type">ListNode</span> <span class="variable">dumpy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(-<span class="number">1</span>),p = dumpy;</span><br><span class="line">    <span class="type">ListNode</span> <span class="variable">p1</span> <span class="operator">=</span> l1,p2=l2;</span><br><span class="line">    <span class="keyword">while</span>(p1!=<span class="literal">null</span>&amp;&amp;p2!=<span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(p1.val&gt;p2.val)&#123;</span><br><span class="line">            p.next =p2;</span><br><span class="line">            p2 = p2.next;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            p.next = p1;</span><br><span class="line">            p1  = p1.next;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//合并剩余的链表</span></span><br><span class="line">    p.next = (p1==<span class="literal">null</span>)?p2:p1;</span><br><span class="line">    retrun dumpy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="合并k个有序链表："><a href="#合并k个有序链表：" class="headerlink" title="合并k个有序链表："></a>合并k个有序链表：</h4><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\title2.jpg" alt="img"></p>
+<p>类似合并两个链表的情况，但是需要高效找到最小的节点，这里使用优先级队列（二叉堆），把节点放入最小堆中，就可以每次获得k个节点中的最小节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ListNode mergeKLists(ListNode[] lists)&#123;</span><br><span class="line">	if(lists.length==0) return null;</span><br><span class="line">	ListNode dumpy = new ListNode(-1);</span><br><span class="line">	ListNode p = dumpy;</span><br><span class="line">	</span><br><span class="line">	//优先级队列</span><br><span class="line">	PriorityQueue&lt;ListNode&gt; pq = new PriorityQueue&lt;&gt;(</span><br><span class="line">		lists.length,(a,b)-&gt;(a.val-b.val)</span><br><span class="line">	);</span><br><span class="line">	for(ListNode head:lists)&#123;</span><br><span class="line">		if(head!=null)&#123;</span><br><span class="line">			pq.add(head);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	while(!pq.isEmpty())&#123;</span><br><span class="line">		ListNode node = pq.poll();</span><br><span class="line">		p.next = node;</span><br><span class="line">		if(node.next!=null)&#123;</span><br><span class="line">			pq.add(node.next);</span><br><span class="line">		&#125;</span><br><span class="line">		p = p.next;</span><br><span class="line">	&#125;</span><br><span class="line">	return dumpy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="拆分链表："><a href="#拆分链表：" class="headerlink" title="拆分链表："></a>拆分链表：</h4><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\title4.jpg" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ListNode partition(ListNode head,int x)&#123;</span><br><span class="line">	ListNode dumpy1 = new ListNode(-1);</span><br><span class="line">	ListNode dumpy2 = new ListNode(-1);</span><br><span class="line">	</span><br><span class="line">	ListNode p1 = dumpy1,p2 = dumpy2;</span><br><span class="line">	ListNode p = head;</span><br><span class="line">	while(p!=null)&#123;</span><br><span class="line">		if(p.val&gt;=x)&#123;</span><br><span class="line">			p2.next = p;</span><br><span class="line">			p2 = p2.next;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			p1.next = p;</span><br><span class="line">			p1 = p1.next;</span><br><span class="line">		&#125;</span><br><span class="line">		//断开每个节点的指针</span><br><span class="line">		ListNode temp = p.next;</span><br><span class="line">		p.next = null;</span><br><span class="line">		p = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	p1.next = dumpy2.next;</span><br><span class="line">	return dumpy1.next;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="单链表的倒数第k个节点："><a href="#单链表的倒数第k个节点：" class="headerlink" title="单链表的倒数第k个节点："></a>单链表的倒数第k个节点：</h4><p>从n个节点，倒数第k个节点就是正数第n-k+1个节点，也是一个for循环，时间复杂度O（n)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 返回链表的倒数第 k 个节点</span><br><span class="line">ListNode findFromEnd(ListNode head, int k) &#123;</span><br><span class="line">    ListNode p1 = head;</span><br><span class="line">    // p1 先走 k 步</span><br><span class="line">    for (int i = 0; i &lt; k; i++) &#123;</span><br><span class="line">        p1 = p1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    ListNode p2 = head;</span><br><span class="line">    // p1 和 p2 同时走 n - k 步</span><br><span class="line">    while (p1 != null) &#123;</span><br><span class="line">        p2 = p2.next;</span><br><span class="line">        p1 = p1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    // p2 现在指向第 n - k + 1 个节点，即倒数第 k 个节点</span><br><span class="line">    return p2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="单链表的中点："><a href="#单链表的中点：" class="headerlink" title="单链表的中点："></a>单链表的中点：</h4><p>让两个指针slow和fast分别指向链表头结点head</p>
+<p>每当慢指针前进一步，快指针就前进两步，这样当快指针走到链表尾时，slow就指向了链表中点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ListNode middleNode(ListNode head)&#123;</span><br><span class="line">	ListNode slow = head,fast = head;</span><br><span class="line">	while(fast!=null&amp;&amp;fast.next!=null)&#123;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">		fast = fast.next.next;</span><br><span class="line">	&#125;</span><br><span class="line">	return slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断链表是否包含环："><a href="#判断链表是否包含环：" class="headerlink" title="判断链表是否包含环："></a>判断链表是否包含环：</h4><p>每当慢指针slow前进一步，快指针fast就前进两步</p>
+<p>如果fast最终遇到空指针，说明链表中没有环；如果fast最终和slow相遇，那肯定是fast超过了slow一圈，说明链表中含有环</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">boolean hasCycle(ListNode head)&#123;</span><br><span class="line">	ListNode slow = head,fast = head;</span><br><span class="line">	while(fast!=null&amp;&amp;fast.next!=null)&#123;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">		fast = fast.next.next;</span><br><span class="line">		if(slow==fast)</span><br><span class="line">			return true;</span><br><span class="line">	&#125;</span><br><span class="line">	return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>进阶版，找到环结点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">ListNode detectCycle(ListNode head)&#123;</span><br><span class="line">	ListNode fast,slow;</span><br><span class="line">	fast = slow = head;</span><br><span class="line">	while(fast!=null&amp;&amp;fast.next!=null)&#123;</span><br><span class="line">		fast = fast.next.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">		if(fast == slow) break;</span><br><span class="line">	&#125;</span><br><span class="line">	if(fast==null||fast.next==null)&#123;</span><br><span class="line">		return null</span><br><span class="line">	&#125;</span><br><span class="line">	slow = head;</span><br><span class="line">	while(slow!=fast)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	return slow;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="两个链表是否相交："><a href="#两个链表是否相交：" class="headerlink" title="两个链表是否相交："></a>两个链表是否相交：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ListNode getIntersectionNode(ListNode headA,ListNode headB)&#123;</span><br><span class="line">	ListNode p1 = headA,p2 = headB;</span><br><span class="line">	while(p1!=p2)&#123;</span><br><span class="line">		if(p1==null)&#123;</span><br><span class="line">			p1 = headB;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			p1 = p1.next;</span><br><span class="line">		&#125; </span><br><span class="line">		if(p2==null)&#123;</span><br><span class="line">			p2 = headA;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			p2 = p2.next;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return p1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="递归算法："><a href="#递归算法：" class="headerlink" title="递归算法："></a>递归算法：</h3><h4 id="反转链表："><a href="#反转链表：" class="headerlink" title="反转链表："></a>反转链表：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ListNode reverse(ListNode head)&#123;</span><br><span class="line">	if(head==null||head.next==null)&#123;</span><br><span class="line">		return head;</span><br><span class="line">	&#125;</span><br><span class="line">	ListNode last = reverse(head.next);</span><br><span class="line">	head.next.next = head;</span><br><span class="line">	head.next = null;</span><br><span class="line">	return last;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="反转前n个节点链表："><a href="#反转前n个节点链表：" class="headerlink" title="反转前n个节点链表："></a>反转前n个节点链表：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//后驱节点，第n+1个节点</span><br><span class="line">ListNode successor = null;</span><br><span class="line">ListNode reverse(ListNode head，int n)&#123;</span><br><span class="line">	if(n==1)&#123;</span><br><span class="line">		successor = head.next;</span><br><span class="line">		return head;</span><br><span class="line">	&#125;</span><br><span class="line">	ListNode last = reverse(head.next,n-1);</span><br><span class="line">	head.next.next = head;</span><br><span class="line">	head.next = successor;</span><br><span class="line">	return last;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="反转链表的一部分："><a href="#反转链表的一部分：" class="headerlink" title="反转链表的一部分："></a>反转链表的一部分：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ListNode reverseBetween(ListNode head,int m,int n)&#123;</span><br><span class="line">	if(m==1)&#123;</span><br><span class="line">		return reverseN(head,n);</span><br><span class="line">	&#125;</span><br><span class="line">	head.next = reverseBetween(head.next,m-1,n-1);</span><br><span class="line">	return head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="k个一组反转链表："><a href="#k个一组反转链表：" class="headerlink" title="k个一组反转链表："></a>k个一组反转链表：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">ListNode reverseKGroup(ListNode head,int k)&#123;</span><br><span class="line">	if(head==null) return null;</span><br><span class="line">	ListNode a,b;</span><br><span class="line">	a=b=head;</span><br><span class="line">	for(int i=0;i&lt;k;i++)&#123;</span><br><span class="line">		if(b==null) return head;</span><br><span class="line">		b = b.next;</span><br><span class="line">	&#125;</span><br><span class="line">	ListNode newHead = reverse(a,b);</span><br><span class="line">	a.next = reverseKGroup(b,k);</span><br><span class="line">	return newHead;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ListNode reverse(ListNode a,ListNode b)&#123;</span><br><span class="line">	ListNode pre,cur,nxt;</span><br><span class="line">	pre=null;cur=a;nxt=a;</span><br><span class="line">	while(cur!=b)&#123;</span><br><span class="line">		nxt=cur.next;</span><br><span class="line">		cur.next = pre;</span><br><span class="line">		pre = cur;</span><br><span class="line">		cur = nxt;</span><br><span class="line">	&#125;</span><br><span class="line">	return pre;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="判断回文链表："><a href="#判断回文链表：" class="headerlink" title="判断回文链表："></a>判断回文链表：</h3><p>1.把一条链表反转存入一条新的链表，然后比较这两条链表是否相同</p>
+<p>2.后序遍历链表，在后序遍历时进行判断</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 左侧指针</span><br><span class="line">ListNode left;</span><br><span class="line"></span><br><span class="line">boolean isPalindrome(ListNode head) &#123;</span><br><span class="line">    left = head;</span><br><span class="line">    return traverse(head);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">boolean traverse(ListNode right) &#123;</span><br><span class="line">    if (right == null) return true;</span><br><span class="line">    boolean res = traverse(right.next);</span><br><span class="line">    // 后序遍历代码</span><br><span class="line">    res = res &amp;&amp; (right.val == left.val);</span><br><span class="line">    left = left.next;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.双指针找到中点，然后反转后半部分链表，进行比较</p>
+<h2 id="数组算法"><a href="#数组算法" class="headerlink" title="数组算法"></a>数组算法</h2><h3 id="双指针法：-1"><a href="#双指针法：-1" class="headerlink" title="双指针法："></a>双指针法：</h3><h4 id="快慢指针："><a href="#快慢指针：" class="headerlink" title="快慢指针："></a>快慢指针：</h4><p>去重，移除某元素</p>
+<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\title26.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">int removeDuplicates(int[] nums)&#123;</span><br><span class="line">	if(nums.length==0)&#123;</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	int slow=0,fast=0;</span><br><span class="line">	while(fast&lt;nums.length)&#123;</span><br><span class="line">		if(nums[fast]!=nums[slow])&#123;</span><br><span class="line">			slow++;</span><br><span class="line">			nums[slow]= nums[fast];</span><br><span class="line">		&#125;</span><br><span class="line">		fast++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="左右指针："><a href="#左右指针：" class="headerlink" title="左右指针："></a>左右指针：</h4><p>1.二分查找</p>
+<p>2.两数之和</p>
+<p>3.反转数组</p>
+<p>4.回文判断</p>
+<h3 id="前缀和："><a href="#前缀和：" class="headerlink" title="前缀和："></a>前缀和：</h3><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title304.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class NumMatrix &#123;</span><br><span class="line">    // 定义：preSum[i][j] 记录 matrix 中子矩阵 [0, 0, i-1, j-1] 的元素和</span><br><span class="line">    private int[][] preSum;</span><br><span class="line">    </span><br><span class="line">    public NumMatrix(int[][] matrix) &#123;</span><br><span class="line">        int m = matrix.length, n = matrix[0].length;</span><br><span class="line">        if (m == 0 || n == 0) return;</span><br><span class="line">        // 构造前缀和矩阵</span><br><span class="line">        preSum = new int[m + 1][n + 1];</span><br><span class="line">        for (int i = 1; i &lt;= m; i++) &#123;</span><br><span class="line">            for (int j = 1; j &lt;= n; j++) &#123;</span><br><span class="line">                // 计算每个矩阵 [0, 0, i, j] 的元素和</span><br><span class="line">                preSum[i][j] = preSum[i-1][j] + preSum[i][j-1] + matrix[i - 1][j - 1] - preSum[i-1][j-1];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 计算子矩阵 [x1, y1, x2, y2] 的元素和</span><br><span class="line">    public int sumRegion(int x1, int y1, int x2, int y2) &#123;</span><br><span class="line">        // 目标矩阵之和由四个相邻矩阵运算获得</span><br><span class="line">        return preSum[x2+1][y2+1] - preSum[x1][y2+1] - preSum[x2+1][y1] + preSum[x1][y1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="差分数组："><a href="#差分数组：" class="headerlink" title="差分数组："></a>差分数组：</h3><p>差分数组的主要适用场景是频繁对原始数组的某个区间的元素进行增减</p>
+<p>类似前缀和技巧，先对数组构造一个diff差分数组，diff[i]就是nums[i]和nums[i-1]之差</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int[] diff = new int[nums.length];</span><br><span class="line">// 构造差分数组</span><br><span class="line">diff[0] = nums[0];</span><br><span class="line">for (int i = 1; i &lt; nums.length; i++) &#123;</span><br><span class="line">    diff[i] = nums[i] - nums[i - 1];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以快速进行区间增减操作，例如对区间nums[i….j]的元素全部加3，可以让diff[i]+&#x3D;3,diff[j+1]-&#x3D;3即可</p>
+<p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title1109.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">int[] corpFlightBookings(int[][] bookings, int n) &#123;</span><br><span class="line">    // nums 初始化为全 0</span><br><span class="line">    int[] nums = new int[n];</span><br><span class="line">    // 构造差分解法</span><br><span class="line">    Difference df = new Difference(nums);</span><br><span class="line"></span><br><span class="line">    for (int[] booking : bookings) &#123;</span><br><span class="line">        // 注意转成数组索引要减一哦</span><br><span class="line">        int i = booking[0] - 1;</span><br><span class="line">        int j = booking[1] - 1;</span><br><span class="line">        int val = booking[2];</span><br><span class="line">        // 对区间 nums[i..j] 增加 val</span><br><span class="line">        df.increment(i, j, val);</span><br><span class="line">    &#125;</span><br><span class="line">    // 返回最终的结果数组</span><br><span class="line">    return df.result();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 差分数组工具类</span><br><span class="line">class Difference &#123;</span><br><span class="line">    // 差分数组</span><br><span class="line">    private int[] diff;</span><br><span class="line">    </span><br><span class="line">    /* 输入一个初始数组，区间操作将在这个数组上进行 */</span><br><span class="line">    public Difference(int[] nums) &#123;</span><br><span class="line">        assert nums.length &gt; 0;</span><br><span class="line">        diff = new int[nums.length];</span><br><span class="line">        // 根据初始数组构造差分数组</span><br><span class="line">        diff[0] = nums[0];</span><br><span class="line">        for (int i = 1; i &lt; nums.length; i++) &#123;</span><br><span class="line">            diff[i] = nums[i] - nums[i - 1];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* 给闭区间 [i, j] 增加 val（可以是负数）*/</span><br><span class="line">    public void increment(int i, int j, int val) &#123;</span><br><span class="line">        diff[i] += val;</span><br><span class="line">        if (j + 1 &lt; diff.length) &#123;</span><br><span class="line">            diff[j + 1] -= val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* 返回结果数组 */</span><br><span class="line">    public int[] result() &#123;</span><br><span class="line">        int[] res = new int[diff.length];</span><br><span class="line">        // 根据差分数组构造结果数组</span><br><span class="line">        res[0] = diff[0];</span><br><span class="line">        for (int i = 1; i &lt; diff.length; i++) &#123;</span><br><span class="line">            res[i] = res[i - 1] + diff[i];</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二维数组的花式遍历："><a href="#二维数组的花式遍历：" class="headerlink" title="二维数组的花式遍历："></a>二维数组的花式遍历：</h3><p>顺时针旋转矩阵：</p>
+<p>将二维数组进行旋转，例如要求顺时针旋转90度，原地修改。</p>
+<p>可以将其按对角线对称，然后每行进行反转</p>
+<p>矩阵的螺旋遍历：</p>
+<p>核心思路是按照右，下左，上的顺序遍历数组，并使用四个变量圈定未遍历元素的边界</p>
+<h3 id="滑动窗口算法："><a href="#滑动窗口算法：" class="headerlink" title="滑动窗口算法："></a>滑动窗口算法：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">/* 滑动窗口算法框架 */</span><br><span class="line">void slidingWindow(string s) &#123;</span><br><span class="line">    Map&lt;char, int&gt; window;</span><br><span class="line">    </span><br><span class="line">    int left = 0, right = 0;</span><br><span class="line">    while (right &lt; s.size()) &#123;</span><br><span class="line">        // c 是将移入窗口的字符</span><br><span class="line">        char c = s[right];</span><br><span class="line">        // 增大窗口</span><br><span class="line">        right++;</span><br><span class="line">        // 进行窗口内数据的一系列更新</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        /*** debug 输出的位置 ***/</span><br><span class="line">        printf(&quot;window: [%d, %d)\n&quot;, left, right);</span><br><span class="line">        /********************/</span><br><span class="line">        </span><br><span class="line">        // 判断左侧窗口是否要收缩</span><br><span class="line">        while (window needs shrink) &#123;</span><br><span class="line">            // d 是将移出窗口的字符</span><br><span class="line">            char d = s[left];</span><br><span class="line">            // 缩小窗口</span><br><span class="line">            left++;</span><br><span class="line">            // 进行窗口内数据的一系列更新</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\title76.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    </span><br><span class="line">    public String minWindow(String s, String t) &#123;</span><br><span class="line">        HashMap&lt;Character,Integer&gt; hs = new HashMap&lt;Character,Integer&gt;();</span><br><span class="line">        HashMap&lt;Character,Integer&gt; ht = new HashMap&lt;Character,Integer&gt;();</span><br><span class="line">        for(int i = 0;i &lt; t.length();i ++)&#123;</span><br><span class="line">            ht.put(t.charAt(i),ht.getOrDefault(t.charAt(i), 0) + 1);</span><br><span class="line">        &#125;</span><br><span class="line">        String ans = &quot;&quot;;</span><br><span class="line">        int len = Integer.MAX_VALUE,cnt = 0,start = 0;</span><br><span class="line">        int left =0,right=0;</span><br><span class="line">        while(right&lt;s.length())&#123;</span><br><span class="line">            char c = s.charAt(right);</span><br><span class="line">            right++;</span><br><span class="line">            if(ht.containsKey(c))&#123;</span><br><span class="line">                hs.put(c,hs.getOrDefault(c,0)+1);</span><br><span class="line">                if (hs.get(c).equals(ht.get(c)))</span><br><span class="line">                    cnt++;</span><br><span class="line">            &#125;</span><br><span class="line">            while(cnt==ht.size())&#123;</span><br><span class="line">                if (right - left &lt; len) &#123;</span><br><span class="line">                    start = left;</span><br><span class="line">                    len = right - left;</span><br><span class="line">                &#125;</span><br><span class="line">            </span><br><span class="line">                char d = s.charAt(left);</span><br><span class="line">                // 缩小窗口</span><br><span class="line">                left++;</span><br><span class="line">                // 进行窗口内数据的一系列更新</span><br><span class="line">                if (ht.containsKey(d)) &#123;</span><br><span class="line">                    if (hs.get(d).equals(ht.get(d)))</span><br><span class="line">                        cnt--;</span><br><span class="line">                    hs.put(d,hs.get(d)-1);</span><br><span class="line">                &#125;   </span><br><span class="line">            &#125;   </span><br><span class="line">        &#125;</span><br><span class="line">        return len == Integer.MAX_VALUE ? &quot;&quot; : s.substring(start, start+len); </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二分搜索："><a href="#二分搜索：" class="headerlink" title="二分搜索："></a>二分搜索：</h3><p>二分查找不要出现else，而是把所有的情况用else if写清楚，这样可以清楚地展现所有细节。</p>
+<p>计算mid时需要防止溢出，代码中使用left+(right-left)&#x2F;2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">int binarySearch(int[] nums, int target) &#123;</span><br><span class="line">    int left = 0; </span><br><span class="line">    int right = nums.length - 1; // 注意</span><br><span class="line"></span><br><span class="line">    while(left &lt;= right) &#123;</span><br><span class="line">        int mid = left + (right - left) / 2;</span><br><span class="line">        if(nums[mid] == target)</span><br><span class="line">            return mid; </span><br><span class="line">        else if (nums[mid] &lt; target)</span><br><span class="line">            left = mid + 1; // 注意</span><br><span class="line">        else if (nums[mid] &gt; target)</span><br><span class="line">            right = mid - 1; // 注意</span><br><span class="line">    &#125;</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>前，中，后序遍历的基本思想</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">void traverse(TreeNode root) &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // 前序位置</span><br><span class="line">    traverse(root.left);</span><br><span class="line">    // 中序位置</span><br><span class="line">    traverse(root.right);</span><br><span class="line">    // 后序位置</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="归并排序："><a href="#归并排序：" class="headerlink" title="归并排序："></a>归并排序：</h3><p>算法思路</p>
+<p>和二叉树的后序遍历很像：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 定义：排序 nums[lo..hi]</span><br><span class="line">void sort(int[] nums, int lo, int hi) &#123;</span><br><span class="line">    if (lo == hi) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    int mid = (lo + hi) / 2;</span><br><span class="line">    // 利用定义，排序 nums[lo..mid]</span><br><span class="line">    sort(nums, lo, mid);</span><br><span class="line">    // 利用定义，排序 nums[mid+1..hi]</span><br><span class="line">    sort(nums, mid + 1, hi);</span><br><span class="line"></span><br><span class="line">    /****** 后序位置 ******/</span><br><span class="line">    // 此时两部分子数组已经被排好序</span><br><span class="line">    // 合并两个有序数组，使 nums[lo..hi] 有序</span><br><span class="line">    merge(nums, lo, mid, hi);</span><br><span class="line">    /*********************/</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 将有序数组 nums[lo..mid] 和有序数组 nums[mid+1..hi]</span><br><span class="line">// 合并为有序数组 nums[lo..hi]</span><br><span class="line">void merge(int[] nums, int lo, int mid, int hi);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>归并排序的代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">class Merge &#123;</span><br><span class="line"></span><br><span class="line">    // 用于辅助合并有序数组，全局变量temp数组</span><br><span class="line">    private static int[] temp;</span><br><span class="line"></span><br><span class="line">    public static void sort(int[] nums) &#123;</span><br><span class="line">        // 先给辅助数组开辟内存空间</span><br><span class="line">        temp = new int[nums.length];</span><br><span class="line">        // 排序整个数组（原地修改）</span><br><span class="line">        sort(nums, 0, nums.length - 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 定义：将子数组 nums[lo..hi] 进行排序</span><br><span class="line">    private static void sort(int[] nums, int lo, int hi) &#123;</span><br><span class="line">        if (lo == hi) &#123;</span><br><span class="line">            // 单个元素不用排序</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        // 这样写是为了防止溢出，效果等同于 (hi + lo) / 2</span><br><span class="line">        int mid = lo + (hi - lo) / 2;</span><br><span class="line">        // 先对左半部分数组 nums[lo..mid] 排序</span><br><span class="line">        sort(nums, lo, mid);</span><br><span class="line">        // 再对右半部分数组 nums[mid+1..hi] 排序</span><br><span class="line">        sort(nums, mid + 1, hi);</span><br><span class="line">        // 将两部分有序数组合并成一个有序数组</span><br><span class="line">        merge(nums, lo, mid, hi);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 将 nums[lo..mid] 和 nums[mid+1..hi] 这两个有序数组合并成一个有序数组</span><br><span class="line">    private static void merge(int[] nums, int lo, int mid, int hi) &#123;</span><br><span class="line">        // 先把 nums[lo..hi] 复制到辅助数组中</span><br><span class="line">        // 以便合并后的结果能够直接存入 nums</span><br><span class="line">        for (int i = lo; i &lt;= hi; i++) &#123;</span><br><span class="line">            temp[i] = nums[i];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 数组双指针技巧，合并两个有序数组</span><br><span class="line">        int i = lo, j = mid + 1;</span><br><span class="line">        for (int p = lo; p &lt;= hi; p++) &#123;</span><br><span class="line">            if (i == mid + 1) &#123;</span><br><span class="line">                // 左半边数组已全部被合并</span><br><span class="line">                nums[p] = temp[j++];</span><br><span class="line">            &#125; else if (j == hi + 1) &#123;</span><br><span class="line">                // 右半边数组已全部被合并</span><br><span class="line">                nums[p] = temp[i++];</span><br><span class="line">            &#125; else if (temp[i] &gt; temp[j]) &#123;</span><br><span class="line">                nums[p] = temp[j++];</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                nums[p] = temp[i++];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="回溯算法（DFS）和BFS"><a href="#回溯算法（DFS）和BFS" class="headerlink" title="回溯算法（DFS）和BFS"></a>回溯算法（DFS）和BFS</h1><h2 id="回溯算法的框架"><a href="#回溯算法的框架" class="headerlink" title="回溯算法的框架"></a>回溯算法的框架</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">result = []</span><br><span class="line">def backtrack(路径, 选择列表):</span><br><span class="line">    if 满足结束条件:</span><br><span class="line">        result.add(路径)</span><br><span class="line">        return</span><br><span class="line">    </span><br><span class="line">    for 选择 in 选择列表:</span><br><span class="line">        做选择</span><br><span class="line">        backtrack(路径, 选择列表)</span><br><span class="line">        撤销选择</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="排列组合"><a href="#排列组合" class="headerlink" title="排列组合"></a>排列组合</h2><h3 id="元素无重复不可复选"><a href="#元素无重复不可复选" class="headerlink" title="元素无重复不可复选"></a>元素无重复不可复选</h3><p> 子集</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录回溯算法的递归路径</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">// 主函数</span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; subsets(int[] nums) &#123;</span><br><span class="line">    backtrack(nums, 0);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回溯算法核心函数，遍历子集问题的回溯树</span><br><span class="line">void backtrack(int[] nums, int start) &#123;</span><br><span class="line"></span><br><span class="line">    // 前序位置，每个节点的值都是一个子集</span><br><span class="line">    res.add(new LinkedList&lt;&gt;(track));</span><br><span class="line">    </span><br><span class="line">    // 回溯算法标准框架</span><br><span class="line">    for (int i = start; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 做选择</span><br><span class="line">        track.addLast(nums[i]);</span><br><span class="line">        // 通过 start 参数控制树枝的遍历，避免产生重复的子集</span><br><span class="line">        backtrack(nums, i + 1);</span><br><span class="line">        // 撤销选择</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>组合</p>
+<p>只需要修改base case即可，控制算法仅仅收集第k层节点即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录回溯算法的递归路径</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">// 主函数</span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; subsets(int[] nums) &#123;</span><br><span class="line">    backtrack(nums, 0);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回溯算法核心函数，遍历子集问题的回溯树</span><br><span class="line">void backtrack(int[] nums, int start) &#123;</span><br><span class="line"></span><br><span class="line">    // 前序位置，每个节点的值都是一个子集</span><br><span class="line">    res.add(new LinkedList&lt;&gt;(track));</span><br><span class="line">    </span><br><span class="line">    // 回溯算法标准框架</span><br><span class="line">    for (int i = start; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 做选择</span><br><span class="line">        track.addLast(nums[i]);</span><br><span class="line">        // 通过 start 参数控制树枝的遍历，避免产生重复的子集</span><br><span class="line">        backtrack(nums, i + 1);</span><br><span class="line">        // 撤销选择</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录回溯算法的递归路径</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line">// track 中的元素会被标记为 true</span><br><span class="line">boolean[] used;</span><br><span class="line"></span><br><span class="line">/* 主函数，输入一组不重复的数字，返回它们的全排列 */</span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; permute(int[] nums) &#123;</span><br><span class="line">    used = new boolean[nums.length];</span><br><span class="line">    backtrack(nums);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回溯算法核心函数</span><br><span class="line">void backtrack(int[] nums) &#123;</span><br><span class="line">    // base case，到达叶子节点</span><br><span class="line">    if (track.size() == nums.length) &#123;</span><br><span class="line">        // 收集叶子节点上的值</span><br><span class="line">        res.add(new LinkedList(track));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 回溯算法标准框架</span><br><span class="line">    for (int i = 0; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 已经存在 track 中的元素，不能重复选择</span><br><span class="line">        if (used[i]) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        // 做选择</span><br><span class="line">        used[i] = true;</span><br><span class="line">        track.addLast(nums[i]);</span><br><span class="line">        // 进入下一层回溯树</span><br><span class="line">        backtrack(nums);</span><br><span class="line">        // 取消选择</span><br><span class="line">        track.removeLast();</span><br><span class="line">        used[i] = false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="元素可重不可复选"><a href="#元素可重不可复选" class="headerlink" title="元素可重不可复选"></a>元素可重不可复选</h3><p>子集</p>
+<p>处理技巧：</p>
+<p>先进行排序，让相同的元素靠在一起，如果发现nums[i]&#x3D;&#x3D;nums[i-1],则跳过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; subsetsWithDup(int[] nums) &#123;</span><br><span class="line">    // 先排序，让相同的元素靠在一起</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    backtrack(nums, 0);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void backtrack(int[] nums, int start) &#123;</span><br><span class="line">    // 前序位置，每个节点的值都是一个子集</span><br><span class="line">    res.add(new LinkedList&lt;&gt;(track));</span><br><span class="line">    </span><br><span class="line">    for (int i = start; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 剪枝逻辑，值相同的相邻树枝，只遍历第一条</span><br><span class="line">        if (i &gt; start &amp;&amp; nums[i] == nums[i - 1]) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        track.addLast(nums[i]);</span><br><span class="line">        backtrack(nums, i + 1);</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>组合</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录回溯的路径</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录 track 中的元素之和</span><br><span class="line">int trackSum = 0;</span><br><span class="line"></span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; combinationSum2(int[] candidates, int target) &#123;</span><br><span class="line">    if (candidates.length == 0) &#123;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">    // 先排序，让相同的元素靠在一起</span><br><span class="line">    Arrays.sort(candidates);</span><br><span class="line">    backtrack(candidates, 0, target);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回溯算法主函数</span><br><span class="line">void backtrack(int[] nums, int start, int target) &#123;</span><br><span class="line">    // base case，达到目标和，找到符合条件的组合</span><br><span class="line">    if (trackSum == target) &#123;</span><br><span class="line">        res.add(new LinkedList&lt;&gt;(track));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // base case，超过目标和，直接结束</span><br><span class="line">    if (trackSum &gt; target) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 回溯算法标准框架</span><br><span class="line">    for (int i = start; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 剪枝逻辑，值相同的树枝，只遍历第一条</span><br><span class="line">        if (i &gt; start &amp;&amp; nums[i] == nums[i - 1]) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        // 做选择</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        trackSum += nums[i];</span><br><span class="line">        // 递归遍历下一层回溯树</span><br><span class="line">        backtrack(nums, i + 1, target);</span><br><span class="line">        // 撤销选择</span><br><span class="line">        track.removeLast();</span><br><span class="line">        trackSum -= nums[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>排列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line">boolean[] used;</span><br><span class="line"></span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; permuteUnique(int[] nums) &#123;</span><br><span class="line">    // 先排序，让相同的元素靠在一起</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    used = new boolean[nums.length];</span><br><span class="line">    backtrack(nums);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void backtrack(int[] nums) &#123;</span><br><span class="line">    if (track.size() == nums.length) &#123;</span><br><span class="line">        res.add(new LinkedList(track));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for (int i = 0; i &lt; nums.length; i++) &#123;</span><br><span class="line">        if (used[i]) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        // 新添加的剪枝逻辑，固定相同的元素在排列中的相对位置</span><br><span class="line">        if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1] &amp;&amp; !used[i - 1]) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        used[i] = true;</span><br><span class="line">        backtrack(nums);</span><br><span class="line">        track.removeLast();</span><br><span class="line">        used[i] = false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="元素无重可复选"><a href="#元素无重可复选" class="headerlink" title="元素无重可复选"></a>元素无重可复选</h3><p>子集&#x2F;组合</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录回溯的路径</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line">// 记录 track 中的路径和</span><br><span class="line">int trackSum = 0;</span><br><span class="line"></span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; combinationSum(int[] candidates, int target) &#123;</span><br><span class="line">    if (candidates.length == 0) &#123;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">    backtrack(candidates, 0, target);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回溯算法主函数</span><br><span class="line">void backtrack(int[] nums, int start, int target) &#123;</span><br><span class="line">    // base case，找到目标和，记录结果</span><br><span class="line">    if (trackSum == target) &#123;</span><br><span class="line">        res.add(new LinkedList&lt;&gt;(track));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // base case，超过目标和，停止向下遍历</span><br><span class="line">    if (trackSum &gt; target) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 回溯算法标准框架</span><br><span class="line">    for (int i = start; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 选择 nums[i]</span><br><span class="line">        trackSum += nums[i];</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        // 递归遍历下一层回溯树</span><br><span class="line">        // 同一元素可重复使用，注意参数</span><br><span class="line">        backtrack(nums, i, target);</span><br><span class="line">        // 撤销选择 nums[i]</span><br><span class="line">        trackSum -= nums[i];</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = new LinkedList&lt;&gt;();</span><br><span class="line">LinkedList&lt;Integer&gt; track = new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">public List&lt;List&lt;Integer&gt;&gt; permuteRepeat(int[] nums) &#123;</span><br><span class="line">    backtrack(nums);</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回溯算法核心函数</span><br><span class="line">void backtrack(int[] nums) &#123;</span><br><span class="line">    // base case，到达叶子节点</span><br><span class="line">    if (track.size() == nums.length) &#123;</span><br><span class="line">        // 收集叶子节点上的值</span><br><span class="line">        res.add(new LinkedList(track));</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 回溯算法标准框架</span><br><span class="line">    for (int i = 0; i &lt; nums.length; i++) &#123;</span><br><span class="line">        // 做选择</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        // 进入下一层回溯树</span><br><span class="line">        backtrack(nums);</span><br><span class="line">        // 取消选择</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二维矩阵遍历框架"><a href="#二维矩阵遍历框架" class="headerlink" title="二维矩阵遍历框架"></a>二维矩阵遍历框架</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// 二叉树遍历框架</span><br><span class="line">void traverse(TreeNode root) &#123;</span><br><span class="line">    traverse(root.left);</span><br><span class="line">    traverse(root.right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 二维矩阵遍历框架</span><br><span class="line">void dfs(int[][] grid, int i, int j, boolean[][] visited) &#123;</span><br><span class="line">    int m = grid.length, n = grid[0].length;</span><br><span class="line">    if (i &lt; 0 || j &lt; 0 || i &gt;= m || j &gt;= n) &#123;</span><br><span class="line">        // 超出索引边界</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if (visited[i][j]) &#123;</span><br><span class="line">        // 已遍历过 (i, j)</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // 进入节点 (i, j)</span><br><span class="line">    visited[i][j] = true;</span><br><span class="line">    dfs(grid, i - 1, j, visited); // 上</span><br><span class="line">    dfs(grid, i + 1, j, visited); // 下</span><br><span class="line">    dfs(grid, i, j - 1, visited); // 左</span><br><span class="line">    dfs(grid, i, j + 1, visited); // 右</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="BFS算法"><a href="#BFS算法" class="headerlink" title="BFS算法"></a>BFS算法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 计算从起点 start 到终点 target 的最近距离</span><br><span class="line">int BFS(Node start, Node target) &#123;</span><br><span class="line">    Queue&lt;Node&gt; q; // 核心数据结构</span><br><span class="line">    Set&lt;Node&gt; visited; // 避免走回头路</span><br><span class="line">    </span><br><span class="line">    q.offer(start); // 将起点加入队列</span><br><span class="line">    visited.add(start);</span><br><span class="line">    int step = 0; // 记录扩散的步数</span><br><span class="line"></span><br><span class="line">    while (q not empty) &#123;</span><br><span class="line">        int sz = q.size();</span><br><span class="line">        /* 将当前队列中的所有节点向四周扩散 */</span><br><span class="line">        for (int i = 0; i &lt; sz; i++) &#123;</span><br><span class="line">            Node cur = q.poll();</span><br><span class="line">            /* 划重点：这里判断是否到达终点 */</span><br><span class="line">            if (cur is target)</span><br><span class="line">                return step;</span><br><span class="line">            /* 将 cur 的相邻节点加入队列 */</span><br><span class="line">            for (Node x : cur.adj()) &#123;</span><br><span class="line">                if (x not in visited) &#123;</span><br><span class="line">                    q.offer(x);</span><br><span class="line">                    visited.add(x);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        /* 划重点：更新步数在这里 */</span><br><span class="line">        step++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">链表算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88%E6%B3%95%EF%BC%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">双指针法：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">合并有序链表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E5%B9%B6k%E4%B8%AA%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">合并k个有序链表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%86%E5%88%86%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">拆分链表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACk%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%9A"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">单链表的倒数第k个节点：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%AD%E7%82%B9%EF%BC%9A"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">单链表的中点：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E9%93%BE%E8%A1%A8%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E7%8E%AF%EF%BC%9A"><span class="nav-number">1.1.1.6.</span> <span class="nav-text">判断链表是否包含环：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E6%98%AF%E5%90%A6%E7%9B%B8%E4%BA%A4%EF%BC%9A"><span class="nav-number">1.1.1.7.</span> <span class="nav-text">两个链表是否相交：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="nav-number">1.1.2.</span> <span class="nav-text">递归算法：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">反转链表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E5%89%8Dn%E4%B8%AA%E8%8A%82%E7%82%B9%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">反转前n个节点链表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9A"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">反转链表的一部分：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#k%E4%B8%AA%E4%B8%80%E7%BB%84%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">k个一组反转链表：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8%EF%BC%9A"><span class="nav-number">1.1.3.</span> <span class="nav-text">判断回文链表：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">数组算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88%E6%B3%95%EF%BC%9A-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">双指针法：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88%EF%BC%9A"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">快慢指针：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A6%E5%8F%B3%E6%8C%87%E9%92%88%EF%BC%9A"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">左右指针：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BC%80%E5%92%8C%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">前缀和：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%AE%E5%88%86%E6%95%B0%E7%BB%84%EF%BC%9A"><span class="nav-number">1.2.3.</span> <span class="nav-text">差分数组：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E7%9A%84%E8%8A%B1%E5%BC%8F%E9%81%8D%E5%8E%86%EF%BC%9A"><span class="nav-number">1.2.4.</span> <span class="nav-text">二维数组的花式遍历：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="nav-number">1.2.5.</span> <span class="nav-text">滑动窗口算法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2%EF%BC%9A"><span class="nav-number">1.2.6.</span> <span class="nav-text">二分搜索：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">1.3.</span> <span class="nav-text">二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">归并排序：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E7%AE%97%E6%B3%95%EF%BC%88DFS%EF%BC%89%E5%92%8CBFS"><span class="nav-number">2.</span> <span class="nav-text">回溯算法（DFS）和BFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E7%AE%97%E6%B3%95%E7%9A%84%E6%A1%86%E6%9E%B6"><span class="nav-number">2.1.</span> <span class="nav-text">回溯算法的框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">排列组合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E6%97%A0%E9%87%8D%E5%A4%8D%E4%B8%8D%E5%8F%AF%E5%A4%8D%E9%80%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">元素无重复不可复选</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E5%8F%AF%E9%87%8D%E4%B8%8D%E5%8F%AF%E5%A4%8D%E9%80%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">元素可重不可复选</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E6%97%A0%E9%87%8D%E5%8F%AF%E5%A4%8D%E9%80%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">元素无重可复选</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5%E9%81%8D%E5%8E%86%E6%A1%86%E6%9E%B6"><span class="nav-number">2.3.</span> <span class="nav-text">二维矩阵遍历框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFS%E7%AE%97%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">BFS算法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">乾</p>
+  <div class="site-description" itemprop="description">写一个赚乾的程序</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">乾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

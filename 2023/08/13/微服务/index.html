@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="微服务认识微服务单体架构：将业务的所有功能集中在一个项目中开发，打包成一个包部署 优点：架构简单，部署成本低 缺点：耦合度高 分布式架构：根据业务功能对系统进行拆分，每个业务模块作为独立项目开发，称为一个服务 优点：降低服务耦合 服务治理 需要考虑的问题： 服务拆分粒度如何？ 服务集群地址如何维护？ 服务之间如何实现远程调用？ 服务健康程度如何？ 微服务：微服务是一种经过良好架构设计的分布式架构方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序乾">
+<meta property="og:url" content="http://example.com/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:site_name" content="程序乾">
+<meta property="og:description" content="微服务认识微服务单体架构：将业务的所有功能集中在一个项目中开发，打包成一个包部署 优点：架构简单，部署成本低 缺点：耦合度高 分布式架构：根据业务功能对系统进行拆分，每个业务模块作为独立项目开发，称为一个服务 优点：降低服务耦合 服务治理 需要考虑的问题： 服务拆分粒度如何？ 服务集群地址如何维护？ 服务之间如何实现远程调用？ 服务健康程度如何？ 微服务：微服务是一种经过良好架构设计的分布式架构方">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20221117214336117.png">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20221117214744817.png">
+<meta property="og:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20221118110239295.png">
+<meta property="og:image" content="f:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20221118110432121.png">
+<meta property="og:image" content="c:\Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20221119103505499.png">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20221219111044609.png">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20230313161341123.png">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20230327162941480.png">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20230327163140280.png">
+<meta property="og:image" content="c:\Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20230327163230858.png">
+<meta property="og:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20230402200837162.png">
+<meta property="article:published_time" content="2023-08-13T15:50:59.671Z">
+<meta property="article:modified_time" content="2023-08-09T18:27:33.357Z">
+<meta property="article:author" content="乾">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="d:\Apple\%E9%A1%B9%E7%9B%AE\%E7%A0%94%E7%A9%B6%E7%94%9F%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%96%99\Typora\%E5%9B%BE%E7%89%87\image-20221117214336117.png">
+
+<link rel="canonical" href="http://example.com/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | 程序乾</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">程序乾</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="乾">
+      <meta itemprop="description" content="写一个赚乾的程序">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序乾">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-13 23:50:59" itemprop="dateCreated datePublished" datetime="2023-08-13T23:50:59+08:00">2023-08-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-10 02:27:33" itemprop="dateModified" datetime="2023-08-10T02:27:33+08:00">2023-08-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h1><h2 id="认识微服务"><a href="#认识微服务" class="headerlink" title="认识微服务"></a>认识微服务</h2><h3 id="单体架构："><a href="#单体架构：" class="headerlink" title="单体架构："></a>单体架构：</h3><p>将业务的所有功能集中在一个项目中开发，打包成一个包部署</p>
+<p>优点：架构简单，部署成本低</p>
+<p>缺点：耦合度高</p>
+<h3 id="分布式架构："><a href="#分布式架构：" class="headerlink" title="分布式架构："></a>分布式架构：</h3><p>根据业务功能对系统进行拆分，每个业务模块作为独立项目开发，称为一个服务</p>
+<p>优点：降低服务耦合</p>
+<p>服务治理</p>
+<p>需要考虑的问题：</p>
+<p>服务拆分粒度如何？</p>
+<p>服务集群地址如何维护？</p>
+<p>服务之间如何实现远程调用？</p>
+<p>服务健康程度如何？</p>
+<h3 id="微服务："><a href="#微服务：" class="headerlink" title="微服务："></a>微服务：</h3><p>微服务是一种经过良好架构设计的分布式架构方案，微服务架构特征：</p>
+<p>单一职责： 微服务拆分粒度更小，每一个服务都对应唯一的业务能力，做到单一职责，避免重复业务开发</p>
+<p>面向服务：微服务对外暴露业务接口</p>
+<p>自治：团队独立，技术独立，数据独立，部署独立</p>
+<p>隔离性强：服务调用做好隔离，容错，降级，避免出现级联问题</p>
+<h3 id="微服务技术对比："><a href="#微服务技术对比：" class="headerlink" title="微服务技术对比："></a>微服务技术对比：</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20221117214336117.png" alt="image-20221117214336117"></p>
+<h3 id="SpringCloud："><a href="#SpringCloud：" class="headerlink" title="SpringCloud："></a>SpringCloud：</h3><p>目前使用最广泛的微服务框架</p>
+<p>SpringCloud集成了各种微服务组件，并做了自动装配，十分方便。</p>
+<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20221117214744817.png" alt="image-20221117214744817"></p>
+<h3 id="服务拆分及远程调用："><a href="#服务拆分及远程调用：" class="headerlink" title="服务拆分及远程调用："></a>服务拆分及远程调用：</h3><p>服务拆分注意事项：</p>
+<p>1.不同微服务，不要重复开发相同业务</p>
+<p>2.微服务数据独立，不要访问其他微服务的数据库</p>
+<p>3.微服务可以将自己的业务暴露为接口，供其他微服务调用</p>
+<h2 id="分布式服务架构案例"><a href="#分布式服务架构案例" class="headerlink" title="分布式服务架构案例"></a>分布式服务架构案例</h2><p>1.微服务调用方式</p>
+<p>​	基于RestTemplate发起的http请求实现远程调用</p>
+<p>​	http请求做远程调用是与语言无关的调用，只要知道对方的ip，端口，接口路径，请求参数即可</p>
+<h3 id="提供者与消费者"><a href="#提供者与消费者" class="headerlink" title="提供者与消费者"></a>提供者与消费者</h3><p>服务提供者：一次业务中，被其他微服务调用的服务。（提供接口给其他微服务）</p>
+<p>服务消费者：一次业务中，调用其他微服务的服务。（调用其他微服务提供的接口）</p>
+<h2 id="eureka注册中心"><a href="#eureka注册中心" class="headerlink" title="eureka注册中心"></a>eureka注册中心</h2><h3 id="远程调用的问题"><a href="#远程调用的问题" class="headerlink" title="远程调用的问题"></a>远程调用的问题</h3><p>调用时的http地址硬编码，需要动态编码</p>
+<h3 id="Eureka的作用"><a href="#Eureka的作用" class="headerlink" title="Eureka的作用"></a>Eureka的作用</h3><p>消费者如何获取提供者具体信息？</p>
+<p>​	服务提供者启动时向eureka注册自己的信息</p>
+<p>​	eureka保存这些信息</p>
+<p>​	消费者根据服务名称向eureka拉取提供者信息</p>
+<p>如果有多个服务提供者，消费者该如何选择？</p>
+<p>​	服务消费者利用负载均衡算法，从服务列表中挑选一个</p>
+<p>消费者如何感知服务提供者健康状态？</p>
+<p>​	服务提供者会每隔30秒向EurekaServer发送心跳请求，报告健康状态</p>
+<p>​	eureka会更新记录服务列表信息，心跳不正常会被踢出</p>
+<p>​	消费者就可以拉取到最新的信息</p>
+<h3 id="eureka架构："><a href="#eureka架构：" class="headerlink" title="eureka架构："></a>eureka架构：</h3><p>EurekaServer：服务端，注册中心</p>
+<p>​	记录服务信息</p>
+<p>​	心跳监控</p>
+<p>EurekaClient：客户端</p>
+<p>​	Provider：服务提供者</p>
+<p>​	consumer：服务消费者</p>
+<h3 id="服务注册："><a href="#服务注册：" class="headerlink" title="服务注册："></a>服务注册：</h3><p>引入eureka-client依赖</p>
+<p>在application.yml中配置eureka地址</p>
+<h3 id="服务拉取："><a href="#服务拉取：" class="headerlink" title="服务拉取："></a>服务拉取：</h3><p>在order-server完成服务拉取</p>
+<p>服务拉取是基于服务名称获取服务列表，然后在对服务列表做负载均衡</p>
+<p>1.修改OrderService的代码，修改访问的url路径，用服务名代替ip，端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String url =&quot;http://userservice/user/&quot;+order.getUserId();</span><br></pre></td></tr></table></figure>
+
+<p>2.在order-service项目的启动类OrderApplication中的RestTemplate添加负载均衡注解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">@LoadBalanced</span><br><span class="line">public RestTemplate restTemplate()&#123;</span><br><span class="line">	return new RestTemplate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Ribbon负载均衡"><a href="#Ribbon负载均衡" class="headerlink" title="Ribbon负载均衡"></a>Ribbon负载均衡</h2><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\image-20221118110239295.png" alt="image-20221118110239295"></p>
+<h3 id="负载均衡策略："><a href="#负载均衡策略：" class="headerlink" title="负载均衡策略："></a>负载均衡策略：</h3><p><img src="F:\Apple\项目\研究生课程资料\Typora\图片\image-20221118110432121.png" alt="image-20221118110432121"></p>
+<p>通过IRule实现可以修改负载均衡规则，有两种方式：</p>
+<p>1.代码方式：在order-service中OrderApplication类中，定义一个新的IRule：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">public IRule randoRule()&#123;</span><br><span class="line">	return new RandomRule();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.配置文件方式：在order-service的application.yml文件中，添加新的配置也可以修改规则：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#针对某个微服务</span><br><span class="line">userservice:</span><br><span class="line">	ribbon:</span><br><span class="line">		NFLoadBalanceRuleClassName: com.netflix.loadbalancer.RandoRule </span><br></pre></td></tr></table></figure>
+
+<h3 id="饥饿加载："><a href="#饥饿加载：" class="headerlink" title="饥饿加载："></a>饥饿加载：</h3><p>Ribbon默认采用懒加载，第一次访问时才会去创建LoadBalanceClient，请求事件会很长。</p>
+<p>而饥饿加载则会在项目启动时创建，降低第一次访问的耗时，通过以下配置开启饥饿加载：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ribbon:</span><br><span class="line">	eager-load:</span><br><span class="line">		enabled: true #开启饥饿加载</span><br><span class="line">		clients: userservice #指定对userservice这个服务饥饿加载</span><br></pre></td></tr></table></figure>
+
+<h2 id="Nacos注册中心"><a href="#Nacos注册中心" class="headerlink" title="Nacos注册中心"></a>Nacos注册中心</h2><p>服务的注册和发现，是阿里巴巴的产品，相比Eureka功能丰富点。</p>
+<h3 id="Nacos服务搭建"><a href="#Nacos服务搭建" class="headerlink" title="Nacos服务搭建"></a>Nacos服务搭建</h3><p>下载安装包</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/releases">https://github.com/alibaba/nacos/releases</a></p>
+<p>解压</p>
+<p>在bin目录下运行指令：startup.cmd -m standalone</p>
+<h3 id="Nacos服务注册或发现"><a href="#Nacos服务注册或发现" class="headerlink" title="Nacos服务注册或发现"></a>Nacos服务注册或发现</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">引入nacos.discovery依赖</span><br><span class="line"></span><br><span class="line">配置nacos地址spring.cloud.nacos.server-addr</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nacos服务分级存储模型"><a href="#Nacos服务分级存储模型" class="headerlink" title="Nacos服务分级存储模型"></a>Nacos服务分级存储模型</h3><p>服务—&gt;集群—-&gt;实例</p>
+<p><strong>服务集群属：</strong></p>
+<p>1.修改application.yml，添加如下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">	cloud:</span><br><span class="line">		nacos:</span><br><span class="line">			server-addr: loaclhost:8848 #nacos服务端地址</span><br><span class="line">			discovery:</span><br><span class="line">				cluster-name: HZ #配置集群名称，即机房位置</span><br><span class="line">				</span><br></pre></td></tr></table></figure>
+
+<p><strong>环境隔离</strong></p>
+<h3 id="注册中心原理"><a href="#注册中心原理" class="headerlink" title="注册中心原理"></a>注册中心原理</h3><p>服务提供者分为临时实例和非临时实例，临时实例类似eureka心跳检测，非临时实例会主动发请求问是否存在</p>
+<h3 id="Nacos配置管理"><a href="#Nacos配置管理" class="headerlink" title="Nacos配置管理"></a>Nacos配置管理</h3><p>在Nacos中添加配置文件</p>
+<p>1.引入Nacos的配置管理客户端依赖：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.在userservice中的resource目录添加一个bootstrap.yml文件，这个文件是引导文件，优先级高于application.yml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">	application:</span><br><span class="line">		name: userservice #服务名称</span><br><span class="line">	profiles:</span><br><span class="line">		active: dev</span><br><span class="line">	cloud:</span><br><span class="line">		nacos:</span><br><span class="line">			server-addr: localhost:8848</span><br><span class="line">			config:</span><br><span class="line">				file-extension: yaml # 文件后缀名</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置热更新</strong></p>
+<p>方式一：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">通过@Value注解注入，结合@RefreshScope来刷新</span><br></pre></td></tr></table></figure>
+
+<p>方式二：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">通过@ConfigurationProperties注入，自动刷新</span><br></pre></td></tr></table></figure>
+
+<p><strong>多环境配置共享</strong></p>
+<p>微服务启动时会从nacos读取多个配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[spring.application.name]-[spring.profiles.active].yaml 例如：userservice-dev.yaml</span><br><span class="line"></span><br><span class="line">[spring.application.name].yaml 例如：userservice.yaml</span><br></pre></td></tr></table></figure>
+
+<p>无论profile如何变化，[spring.application.name].yaml这个文件一定会加载，因此多环境共享配置可以写入这个文件</p>
+<p>服务名-profile.yaml&gt;服务名称.yaml&gt;本地配置</p>
+<h3 id="集群搭建步骤"><a href="#集群搭建步骤" class="headerlink" title="集群搭建步骤"></a>集群搭建步骤</h3><p>1.搭建Mysql集群并初始化数据库表</p>
+<p>2.下载解压nacos</p>
+<p>3.修改集群配置（节点信息），数据库配置</p>
+<p>4.分别启动多个nacos节点</p>
+<p>5.nginx反向代理</p>
+<h2 id="http客户端Feign"><a href="#http客户端Feign" class="headerlink" title="http客户端Feign"></a>http客户端Feign</h2><p>Feign是一个声明式http客户端，官方地址：<a target="_blank" rel="noopener" href="http://github.com/OpenFeign/feign">http://github.com/OpenFeign/feign</a></p>
+<p>其作用是实现http请求的发送，解决上面提到的问题</p>
+<h3 id="使用Feign的步骤"><a href="#使用Feign的步骤" class="headerlink" title="使用Feign的步骤"></a>使用Feign的步骤</h3><p>1.引入依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.在order-service的启动类添加注解开启Feign的功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@EnableFeignClients</span><br><span class="line">@MapperScan(&quot;cn.itcast.order.mapper&quot;)</span><br><span class="line">@SpringBootApplication</span><br><span class="line">public class OrderApplication&#123;</span><br><span class="line">	public static void main(String[] args)&#123;</span><br><span class="line">		SpringApplication.run(OrderApplication.class,args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.编写Feign客户端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@FeignClient(&quot;userservice&quot;)</span><br><span class="line">public interface UserClient&#123;</span><br><span class="line">	</span><br><span class="line">	@GetMapping(&quot;/user/&#123;id&#125;&quot;)</span><br><span class="line">	User findById(@PathVariable(&quot;id&quot;) Long id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要是基于SpringMVC的注解来声明远程调用的信息，比如：</p>
+<p>服务名称： userservice</p>
+<p>请求方式：GET</p>
+<p>请求路径：&#x2F;usr&#x2F;{id}</p>
+<p>请求参数： Long id</p>
+<p>返回值类型： User</p>
+<h3 id="自定义Feign的配置"><a href="#自定义Feign的配置" class="headerlink" title="自定义Feign的配置"></a>自定义Feign的配置</h3><p><img src="C:\Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20221119103505499.png" alt="image-20221119103505499"></p>
+<h3 id="Feign的性能优化"><a href="#Feign的性能优化" class="headerlink" title="Feign的性能优化"></a>Feign的性能优化</h3><p>Feign底层的客户端实现：</p>
+<p>URLConnection：默认实现，不支持连接池</p>
+<p>Apache HttpClient： 支持连接池</p>
+<p>OKHttp：支持连接池</p>
+<p>因此优化Feign的性能主要包括：</p>
+<p>1.使用连接池代替默认的URLConnection</p>
+<p>2.日志级别，最好用basic或none</p>
+<p><strong>连接池配置</strong></p>
+<p>引入依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;io.github.openfeign&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;feign-httpclient&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>配置连接池</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">	client:</span><br><span class="line">		config:</span><br><span class="line">			default:</span><br><span class="line">				loggerLevel: BASIC</span><br><span class="line">	httpclient:</span><br><span class="line">		enabled: true</span><br><span class="line">		max-connections: 200</span><br><span class="line">		max-connections-per-route: 50 </span><br></pre></td></tr></table></figure>
+
+<h3 id="Feign的最佳实践"><a href="#Feign的最佳实践" class="headerlink" title="Feign的最佳实践"></a>Feign的最佳实践</h3><p>1.让controller和FeignClient继承同一接口</p>
+<p>2.将FeignClient，Pojo，Feign的默认配置都定义到一个项目中，供所有消费者使用</p>
+<h2 id="统一网关"><a href="#统一网关" class="headerlink" title="统一网关"></a>统一网关</h2><h3 id="网关"><a href="#网关" class="headerlink" title="网关"></a>网关</h3><p>身份认证和权限校验</p>
+<p>服务路由，负载均衡</p>
+<p>请求限流</p>
+<h3 id="网关的技术实现"><a href="#网关的技术实现" class="headerlink" title="网关的技术实现"></a>网关的技术实现</h3><p>关键步骤：</p>
+<p>1.创建项目，引入nacos服务发现和gateway依赖</p>
+<p>2.配置application.yml，包括服务基本信息、nacos地址、路由</p>
+<p>路由配置包括：</p>
+<p>1.路由id：路由的唯一标示</p>
+<p>2.路由目标(uri)：路由的目标地址，http代表固定地址，lb代表根据服务名负载均衡</p>
+<p>3.路由断言（predicates)：判断路由的规则</p>
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>不同环境下，docker可以兼容</p>
+<p>docker将用户程序与所需要调用的系统函数库一起打包</p>
+<h3 id="初识docker"><a href="#初识docker" class="headerlink" title="初识docker"></a>初识docker</h3><p>虚拟机是在操作系统中模拟硬件设备，然后运行另一个操作系统，比如在windows系统里面运行Ubuntu系统，这样就可以运行任意的ubuntu应用</p>
+<h4 id="镜像和容器"><a href="#镜像和容器" class="headerlink" title="镜像和容器"></a>镜像和容器</h4><p>镜像：docker将应用程序及其所需的依赖、函数库、环境、配置等文件打包在一起，称为镜像</p>
+<p>容器：镜像中的应用程序运行后形成的进程就是容器，知识Docker会给容器做隔离，对外不可见</p>
+<p>DockerHub：是Docker镜像的托管平台</p>
+<p>docker架构：CS架构，有两部分组成</p>
+<p>​	服务端：Docker守护进程，负责处理Docker指令，管理镜像，容器等</p>
+<p>​	客户端：通过命令或RestAPI向Docker服务端发送指令，可以在本地或远程向服务端发送指令</p>
+<h3 id="安装Dcoker"><a href="#安装Dcoker" class="headerlink" title="安装Dcoker"></a>安装Dcoker</h3><p>分为CE和EE两大版本，CE社区版（免费，支持周期7个月）</p>
+<h4 id="在CentOS安装Docker"><a href="#在CentOS安装Docker" class="headerlink" title="在CentOS安装Docker"></a>在CentOS安装Docker</h4><p>如果之前安装过，可以使用下面命令卸载</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">yum remove docker \</span><br><span class="line">				docker-client \</span><br><span class="line">				docker-client-latest \</span><br><span class="line">				docker-common \</span><br><span class="line">				docker-latest \</span><br><span class="line">				docker-latest-logrotate \</span><br><span class="line">				docker-logrotate \</span><br><span class="line">				docker-selinux \</span><br><span class="line">				docker-engine-selinux \</span><br><span class="line">				docker-engine \</span><br><span class="line">				docker-ce</span><br></pre></td></tr></table></figure>
+
+<p>安装yum工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y yum-utils \ device-mapper-persistent-data \ lvm2 --skip-broken</span><br></pre></td></tr></table></figure>
+
+<p>配置本地镜像源：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum-config-manager \</span><br><span class="line">	--add-repo \</span><br><span class="line">	https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">sed -i &#x27;s/download.docker.com/mirrors.aliyun.com\/docker-ce/g&#x27; /etc/yum.repos.d/docker-ce.repo</span><br><span class="line"></span><br><span class="line">yum makecache fast</span><br></pre></td></tr></table></figure>
+
+<p>安装命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y docker-ce</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动docker"><a href="#启动docker" class="headerlink" title="启动docker"></a>启动docker</h3><p>正常是去逐一修改防火墙，打开需要用到的端口</p>
+<p>这里简化，直接关闭防火墙</p>
+<p>启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start docker</span><br><span class="line">systemctl run docker</span><br><span class="line">systemctl stop docker</span><br></pre></td></tr></table></figure>
+
+<p>配置国内镜像</p>
+<p>参考国内阿里云的镜像加速文档：<a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors">https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors</a></p>
+<h3 id="Docker基本操作"><a href="#Docker基本操作" class="headerlink" title="Docker基本操作"></a>Docker基本操作</h3><p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20221219111044609.png" alt="image-20221219111044609"></p>
+<h4 id="容器相关命令"><a href="#容器相关命令" class="headerlink" title="容器相关命令"></a>容器相关命令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker pause</span><br><span class="line">docker unpause</span><br><span class="line">docker stop</span><br><span class="line">docker start</span><br></pre></td></tr></table></figure>
+
+<p>案例：</p>
+<p>创建一个Nignx容器</p>
+<p>步骤一：去docker hub查看Nginx的容器运行命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name containerName -p 80:80 -d nginx</span><br></pre></td></tr></table></figure>
+
+<p>进入容器，修改HTML文件内容</p>
+<p>步骤一：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it [name] bash</span><br></pre></td></tr></table></figure>
+
+<p>步骤二：进入nginx的HTML所在目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/share/nginx/html</span><br></pre></td></tr></table></figure>
+
+<p>步骤三：修改index.html的内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;s#Welcome to nginx#qian qian huan ying ni#g&#x27; index.html</span><br><span class="line">sed -i &#x27;s#&lt;head&gt;#&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;#g&#x27; index.html</span><br></pre></td></tr></table></figure>
+
+<h4 id="操作数据卷"><a href="#操作数据卷" class="headerlink" title="操作数据卷"></a>操作数据卷</h4><p>数据卷(volume)：将容器与数据分离，解耦合，方便操作容器内数据，保证数据安全</p>
+<p>数据卷操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume --help</span><br><span class="line">查看volume的所有操作</span><br></pre></td></tr></table></figure>
+
+<h4 id="挂载数据卷"><a href="#挂载数据卷" class="headerlink" title="挂载数据卷"></a>挂载数据卷</h4><p>创建容器时，可以通过-v参数来挂载一个数据卷到某个容器目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">	--name mn \</span><br><span class="line">	-v html:/root/html \</span><br><span class="line">	-p 8080:80 \</span><br><span class="line">	ngnix \</span><br></pre></td></tr></table></figure>
+
+<h4 id="Dockerfile自定义镜像"><a href="#Dockerfile自定义镜像" class="headerlink" title="Dockerfile自定义镜像"></a>Dockerfile自定义镜像</h4><p>镜像结构：</p>
+<p>将应用程序及其需要的系统函数库、环境、配置、依赖打包而成</p>
+<p>自定义镜像：</p>
+<p>Dockerfile是一个文本文件，其中包含一个个的指令，用指令来说明要执行什么操作来构建镜像。每一个指令都会形成一层Layer</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FROM</td>
+<td>指定基础镜像</td>
+<td>FROM centos:6</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>设置环境变量，可在后面指令使用</td>
+<td>ENV key value</td>
+</tr>
+<tr>
+<td>COPY</td>
+<td>拷贝本地文件到镜像的指定目录</td>
+<td>COPY .&#x2F;mysql-5.7.rpm &#x2F;tmp</td>
+</tr>
+<tr>
+<td>RUN</td>
+<td>执行Linux的shell命令，一般是安装过程的命令</td>
+<td>RUN yum install gcc</td>
+</tr>
+<tr>
+<td>EXPOSE</td>
+<td>指定容器运行时监听的端口，是给镜像使用者看的</td>
+<td>EXPOSE 8080</td>
+</tr>
+<tr>
+<td>ENTRYOINT</td>
+<td>镜像中应用的启动命令，容器运行时调用</td>
+<td>ENTRYPOINT java -jar xx.jar</td>
+</tr>
+</tbody></table>
+<p>案例：</p>
+<p>步骤一：</p>
+<p>建立一个空文件夹docker-demo</p>
+<p>步骤二：</p>
+<p>拷贝课前资料中的docker-demo.jar文件到docker-demo这个目录</p>
+<p>步骤三：</p>
+<p>拷贝课前资料中的jadk8.tar.gz文件到docker-demo这个目录</p>
+<p>步骤四：</p>
+<p>拷贝课前资料提供的Dockerfile到docker-demo这个目录</p>
+<p>步骤五：</p>
+<p>进入docker-demo</p>
+<p>步骤六：</p>
+<p>运行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t javaweb:1.0 .</span><br></pre></td></tr></table></figure>
+
+<h3 id="DockerCompose"><a href="#DockerCompose" class="headerlink" title="DockerCompose"></a>DockerCompose</h3><p>Compose文件是一个文本文件，通过指定定义集群中的每个容器如何运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.8&quot;</span><br><span class="line">services:</span><br><span class="line">	mysql:</span><br><span class="line">		image: mysql:5.7.25</span><br><span class="line">		environment:</span><br><span class="line">		MYSQL_ROOT_PASSWORD: 123</span><br><span class="line">		volumes:</span><br><span class="line">		- /tmp/mysql/data:/var/lib/mysql</span><br><span class="line">		- /tmp/mysql/conf/hmy.cnf:/etc/mysql/conf.d/hmy.cnf</span><br><span class="line">	web:</span><br><span class="line">		build: .</span><br><span class="line">		ports:</span><br><span class="line">		- 8090: 8090</span><br></pre></td></tr></table></figure>
+
+<p>DockerCompose的安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://github.com/docker/compose/releases/download/1.29.1/docker-compose-&#x27;uname -s&#x27;-&#x27;uname -m&#x27; &gt; /usr/local/bin/docker-compose</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://raw.githubusercontent.com/docker/compose/1.29.1/contrib/completion/bash/docker-compose &gt; /etc/bash_completion.d/docker-compose</span><br><span class="line"></span><br><span class="line">echo &quot;199.232.68.133 raw.githubusercontent.com&quot; &gt;&gt; /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker镜像仓库"><a href="#Docker镜像仓库" class="headerlink" title="Docker镜像仓库"></a>Docker镜像仓库</h3><p>搭建私有镜像仓库</p>
+<h2 id="服务异步通讯"><a href="#服务异步通讯" class="headerlink" title="服务异步通讯"></a>服务异步通讯</h2><h3 id="初识MQ"><a href="#初识MQ" class="headerlink" title="初识MQ"></a>初识MQ</h3><p>同步通讯</p>
+<p>同步调用会随着业务的增多速度加慢</p>
+<p>异步通讯</p>
+<p>异步调用常见的实现就是事件驱动模式</p>
+<p>MQ（MessageQueue) 是用来存放消息的队列，也就是事件驱动的Broker</p>
+<h3 id="RabbitMQ快速入门"><a href="#RabbitMQ快速入门" class="headerlink" title="RabbitMQ快速入门"></a>RabbitMQ快速入门</h3><p>安装RabbitMQ：</p>
+<p>单机部署：在线拉取</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull rabbitmq:3-management</span><br></pre></td></tr></table></figure>
+
+<p>执行下面命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">-e RABBITMQ_DEFAULT_USER=qian \</span><br><span class="line">-e RABBITMQ_DEFAULT_PASS=1126 \</span><br><span class="line">--name mq \</span><br><span class="line">--hostname mq1 \</span><br><span class="line">-p 15672:15672 \</span><br><span class="line">-p 5672:5672 \</span><br><span class="line">-d \</span><br><span class="line">rabbitmq:3-management</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230313161341123.png" alt="image-20230313161341123"></p>
+<p>常见的消息模型：</p>
+<p>MQ的官方文档中给出了5个MQ的Demo示例，对应了以下不用用法：</p>
+<p>1.基本消息队列(BasicQueue)</p>
+<p>2.工作消息队列(WorkQueue)</p>
+<p>3.发布订阅(Publish、Subscribe)</p>
+<p>​	广播、路由和主题</p>
+<h3 id="SpringAMQP"><a href="#SpringAMQP" class="headerlink" title="SpringAMQP"></a>SpringAMQP</h3><p>AMQP是用于在应用程序之间传递业务消息的开放标准，该协议与语言和平台无关，更符合微服务中的需求</p>
+<p>利用SpringAMQP实现基础消息队列功能</p>
+<p>1.在父工程中引入spring-amqp的依赖</p>
+<p>2.在publisher服务中利用RabbitTemplate发送消息到simple.queue这个对列</p>
+<p>3.在consumer服务中编写消费逻辑，绑定simple.queue这个队列</p>
+<h3 id="发布、订阅"><a href="#发布、订阅" class="headerlink" title="发布、订阅"></a>发布、订阅</h3><p>Fanout :将接收的消息路由到每一个跟其绑定的queue</p>
+<h2 id="分布式搜索"><a href="#分布式搜索" class="headerlink" title="分布式搜索"></a>分布式搜索</h2><h3 id="elasticsearch"><a href="#elasticsearch" class="headerlink" title="elasticsearch:"></a>elasticsearch:</h3><p>是一款强大的开源搜索引擎，可以帮助我们从海量数据中快速找到需要的内容。</p>
+<p>elasticsearch结合kibana、Logstash、Beats组合成elastic stack技术栈</p>
+<h3 id="正向索引和倒排索引："><a href="#正向索引和倒排索引：" class="headerlink" title="正向索引和倒排索引："></a>正向索引和倒排索引：</h3><p>正向索引按照id进行搜索</p>
+<p>倒排索引按照词条进行分词，记录对应词条id，搜索时先对词语进行分词，去词条表查询文档id，根据文档id查找文档</p>
+<h3 id="安装es："><a href="#安装es：" class="headerlink" title="安装es："></a>安装es：</h3><p>单点部署es</p>
+<p>1.创建网络：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network create es-net</span><br></pre></td></tr></table></figure>
+
+<p>2.加载镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">拉取镜像</span><br><span class="line">docker pull elasticsearch:7.12.1</span><br></pre></td></tr></table></figure>
+
+<p>3.运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">--name es \</span><br><span class="line">-e &quot;ES_JAVA_OPTS=-Xms512m -Xmx512m&quot; \</span><br><span class="line">-e &quot;discovery.type=single-node&quot; \</span><br><span class="line">-v es-data:/usr/share/elasticsearch/data \</span><br><span class="line">-v es-plugins:/usr/share/elasticsearch/plugins \</span><br><span class="line">--privileged \</span><br><span class="line">--network es-net \</span><br><span class="line">-p 9200:9200 \</span><br><span class="line">-p 9300:9300 \</span><br><span class="line">elasticsearch:7.12.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="部署kibana："><a href="#部署kibana：" class="headerlink" title="部署kibana："></a>部署kibana：</h3><p>kibana可以提供一个elasticsearch的可视化界面</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">--name kibana \</span><br><span class="line">-e ELASTICSEARCH_HOSTS=http://es:9200 \</span><br><span class="line">--network=es-net \</span><br><span class="line">-p 5601:5601 \</span><br><span class="line">kibana:7.12.1</span><br></pre></td></tr></table></figure>
+
+<p>中文分词器一般使用IK分词器</p>
+<p>安装ik插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#进入容器内部</span><br><span class="line">docker exec -it elasticsearch /bin/bash</span><br><span class="line"></span><br><span class="line">#在线下载并安装</span><br><span class="line">./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.12.1/elasticsearch-analysis-ik-7.12.1.zip</span><br><span class="line"></span><br><span class="line">#退出</span><br><span class="line">exit</span><br><span class="line">#重启容器</span><br><span class="line">docker restart elasticsearch</span><br></pre></td></tr></table></figure>
+
+<h3 id="索引库操作："><a href="#索引库操作：" class="headerlink" title="索引库操作："></a>索引库操作：</h3><p>mapping<strong>映射属性</strong></p>
+<p>对索引库中文档的约束，常见属性包括：</p>
+<p>type：字段数据类型，简单类型：</p>
+<p>​	字符串：text（可分词）、keyword（精确值）</p>
+<p>​	数值：long、integer、short、byte、double、float</p>
+<p>​	布尔：boolean</p>
+<p>​	日期：date</p>
+<p>​	对象：object</p>
+<p>index：是否创建索引，默认为true</p>
+<p>analyzer：使用哪种分词器</p>
+<p>properties：一个字段的子字段</p>
+<h4 id="创建索引库"><a href="#创建索引库" class="headerlink" title="创建索引库"></a>创建索引库</h4><p>通过Restful请求操作索引库、文档。请求内容用DSL语句来表示。创建索引库和mapping的DSL语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引库名称</span><br><span class="line">&#123;</span><br><span class="line">	&quot;mappings&quot;:&#123;</span><br><span class="line">		&quot;properties&quot;:&#123;</span><br><span class="line">			&quot;字段名&quot;:&#123;</span><br><span class="line">				&quot;type&quot;:&quot;text&quot;,</span><br><span class="line">				&quot;analyzer&quot;:&quot;ik_smart&quot;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;字段名2&quot;:&#123;</span><br><span class="line">				&quot;type&quot;:&quot;keyword&quot;,</span><br><span class="line">				&quot;index&quot;:&quot;false&quot;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;字段名3&quot;:&#123;</span><br><span class="line">				&quot;properties&quot;:&#123;</span><br><span class="line">					&quot;子字段&quot;:&#123;</span><br><span class="line">						&quot;type&quot;:&quot;keyword&quot;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看、删除索引库："><a href="#查看、删除索引库：" class="headerlink" title="查看、删除索引库："></a>查看、删除索引库：</h4><p>查看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /索引库名</span><br></pre></td></tr></table></figure>
+
+<p>删除</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /索引库名</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改索引库："><a href="#修改索引库：" class="headerlink" title="修改索引库："></a>修改索引库：</h4><p>不允许修改索引库</p>
+<p>但可以添加新字段</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引库名/_mapping</span><br><span class="line">&#123;</span><br><span class="line">	&quot;properties&quot;:&#123;</span><br><span class="line">		&quot;新字段名&quot;：&#123;</span><br><span class="line">			&quot;type&quot;:&quot;integer&quot;</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文档操作："><a href="#文档操作：" class="headerlink" title="文档操作："></a>文档操作：</h3><h4 id="新增文档："><a href="#新增文档：" class="headerlink" title="新增文档："></a>新增文档：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">POST /索引库名/_doc/文档id</span><br><span class="line">&#123;</span><br><span class="line">	&quot;字段1&quot;:&quot;值1&quot;,</span><br><span class="line">	&quot;字段2&quot;:&quot;值2&quot;,</span><br><span class="line">	&quot;字段3&quot;:&#123;</span><br><span class="line">		&quot;子属性1&quot;:&quot;值3&quot;,</span><br><span class="line">		&quot;子属性2&quot;:&quot;值4&quot;,</span><br><span class="line">		&#125;,</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改文档"><a href="#修改文档" class="headerlink" title="修改文档"></a>修改文档</h4><p>全量修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引库名/_doc/文档id</span><br><span class="line">&#123;</span><br><span class="line">	&quot;字段1&quot;:&quot;值1&quot;,</span><br><span class="line">	&quot;字段2&quot;:&quot;值2&quot;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>局部修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引库名/_doc/文档id</span><br><span class="line">&#123;</span><br><span class="line">	&quot;doc&quot;:&#123;</span><br><span class="line">		&quot;字段名&quot;:&quot;新的值&quot;,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RestClient"><a href="#RestClient" class="headerlink" title="RestClient:"></a>RestClient:</h3><p>一个客户端用来操作文档</p>
+<p>初始化JavaRestClient:</p>
+<p>1.引入es的RestHighLevelClient依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.elasticsearch.client&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;elasticsearch-rest-high-level-client&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.因为SpringBoot默认的ES版本是7.6.2，所以需要覆盖默认的ES版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties&gt;</span><br><span class="line">	&lt;java.version&gt;1.8&lt;/java.version&gt;     &lt;elasticsearch.version&gt;7.12.1&lt;/elasticsearch.version&gt;</span><br><span class="line">&lt;/properties&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3.初始化RestHighLevelClient：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RestHighLevelClient client=new RestHighLevelClient(RestClient.builder(HttpHost.create(&quot;http://192.168.150.101:9200&quot;)));</span><br></pre></td></tr></table></figure>
+
+<h3 id="DSL查询语法："><a href="#DSL查询语法：" class="headerlink" title="DSL查询语法："></a>DSL查询语法：</h3><h4 id="全文检索查询："><a href="#全文检索查询：" class="headerlink" title="全文检索查询："></a>全文检索查询：</h4><p>match查询：全文检索查询的一种，会对用户输入内容分词，然后去倒排索引库检索，语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;match&quot;:&#123;</span><br><span class="line">			&quot;FIELD&quot;:&quot;TEXT&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="精确查询："><a href="#精确查询：" class="headerlink" title="精确查询："></a>精确查询：</h4><p>term查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GET /indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;term&quot;:&#123;</span><br><span class="line">			&quot;FIELD&quot;:&#123;</span><br><span class="line">				&quot;value&quot;:&quot;VALUE&quot;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>range查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;range&quot;:&#123;</span><br><span class="line">			&quot;FIELD&quot;:&#123;</span><br><span class="line">				&quot;gte&quot;:10,</span><br><span class="line">				&quot;lte&quot;:20</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>地理查询：</p>
+<p>根据经纬度查询</p>
+<p>geo_bounding_box:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">GET /indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;geo_bounding_box&quot;:&#123;</span><br><span class="line">			&quot;FIELD&quot;:&#123;</span><br><span class="line">				&quot;top_left&quot;:&#123;</span><br><span class="line">                    &quot;lat&quot;:10.1,</span><br><span class="line">                    &quot;lon&quot;:20.6</span><br><span class="line">				&#125;,</span><br><span class="line">				&quot;bottom_right&quot;:&#123;</span><br><span class="line">                    &quot;lat&quot;:10.1,</span><br><span class="line">                    &quot;lon&quot;:20.6</span><br><span class="line">				&#125;,</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复合查询：</p>
+<p>function score：</p>
+<h3 id="搜索结果处理："><a href="#搜索结果处理：" class="headerlink" title="搜索结果处理："></a>搜索结果处理：</h3><p>默认是根据额相关度算分来排序。可排序的字段类型有：keyword类型、数值类型、地理坐标类型和日期类型。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;match_all&quot;:&#123;&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	&quot;sort&quot;:[</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;FIELD&quot;:&quot;desc&quot; //排序字段和排序方式ASC,DESC</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>分页：</strong></p>
+<p>默认情况下只返回top10的数据</p>
+<p>通过修改from、size参数来控制要返回的分页结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GET /indexName/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;match_all&quot;:&#123;&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	&quot;from&quot;:990,</span><br><span class="line">	&quot;size&quot;:10,</span><br><span class="line">	&quot;sort&quot;:[</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;FIELD&quot;:&quot;desc&quot; //排序字段和排序方式ASC,DESC</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>深度分页问题：</strong></p>
+<p>ES是分布式，所以会面临深度分页问题。例如按price排序后，获取from&#x3D;990，size&#x3D;10的数据</p>
+<p>1.首先在每个数据分片上都排序并查询前1000条文档</p>
+<p>2.然后将所有节点的结果聚合，在内存中重新排序选出前1000条文档</p>
+<p>3.最后从这1000条中，选取从990开始的10条文档</p>
+<p><strong>高亮：</strong></p>
+<p>就是在搜索结果中把搜索关键字突出显示</p>
+<p>原理：将搜索结果中的关键字用标签标记出来；在页面中给标签添加css样式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">GET /hotel/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;query&quot;:&#123;</span><br><span class="line">		&quot;match&quot;:&#123;</span><br><span class="line">			&quot;FIELD&quot;:&quot;TEXT&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	&quot;highlight&quot;:&#123;</span><br><span class="line">		&quot;fileds&quot;:&#123;</span><br><span class="line">			&quot;FIELD&quot;:&#123;</span><br><span class="line">				&quot;pre_tags&quot;:&quot;&lt;em&gt;&quot;;</span><br><span class="line">				&quot;post_tags&quot;:&quot;&lt;/em&gt;&quot;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据聚合："><a href="#数据聚合：" class="headerlink" title="数据聚合："></a>数据聚合：</h3><p>聚合式实现对文档数据的统计、分析、运算。常见聚合有三类：</p>
+<p>桶（Bucket）聚合：用来对文档做分组</p>
+<p>​	TermAggregation：按照文档字段值分组</p>
+<p>​	Date Histogram：按照日期阶梯分组，例如一周为一组，或者一月为一组</p>
+<p>度量（Metric）聚合：用以计算一些值，比如：最大值、最小值、平均值等</p>
+<p>​	Avg：平均</p>
+<p>​	Max：求最大</p>
+<p>​	Min：求最小</p>
+<p>​	Stats：同时求max、min、avg、sum等</p>
+<p>管道（pipeline）聚合：其他聚合的结果为基础做聚合</p>
+<h4 id="DSL实现Bucket聚合："><a href="#DSL实现Bucket聚合：" class="headerlink" title="DSL实现Bucket聚合："></a>DSL实现Bucket聚合：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET /hotel/_search</span><br><span class="line">&#123;</span><br><span class="line">	&quot;size&quot;:0, //设置size为0，结果中不包含文档，只包含聚合结果</span><br><span class="line">	&quot;aggs&quot;:&#123; //定义聚合</span><br><span class="line">		&quot;brandAgg&quot;:&#123; //给聚合设置的名字</span><br><span class="line">			&quot;terms&quot;:&#123; //聚合的类型，按照品牌值聚合，所以选择term</span><br><span class="line">				&quot;filed&quot;:&quot;brand&quot;, //参与聚合的字段</span><br><span class="line">				&quot;size&quot;:20 //聚合结果的数量</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="自动补全："><a href="#自动补全：" class="headerlink" title="自动补全："></a>自动补全：</h4><p>拼音分词器：</p>
+<p>实现根据字母做补全，对文档按照拼音分词。</p>
+<p>地址：<a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-pinyin">https://github.com/medcl/elasticsearch-analysis-pinyin</a></p>
+<p>安装类似ik分词器：</p>
+<p>解压</p>
+<p>上传到虚拟机中，elasticsearch的plugin目录</p>
+<p>重启elasticsearch</p>
+<p>测试</p>
+<p>自定义分词器：</p>
+<p>elasticsearch中分词器的组成包含三部分：</p>
+<p>character filters：在tokenizer之前对文本进行处理。例如删除字符、替换字符</p>
+<p>tokenizer：将文本按照一定的规则切割成词条。例如：keyword；ik_smart</p>
+<p>tokenizer filter：将tokenizer输出的词条做进一步处理。例如大小写转换、同义词处理、拼音处理等</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PUT /test</span><br><span class="line">&#123;</span><br><span class="line">	&quot;settings&quot;:&#123;</span><br><span class="line">		&quot;analysis&quot;:&#123;</span><br><span class="line">			&quot;analyzer&quot;:&#123;</span><br><span class="line">				&quot;my_analyzer&quot;:&#123;</span><br><span class="line">					&quot;tokenizer&quot;:&quot;ik_max_word&quot;,</span><br><span class="line">					&quot;filter&quot;:&quot;pinyin&quot;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="数据同步："><a href="#数据同步：" class="headerlink" title="数据同步："></a>数据同步：</h4><p>elasticsearch中的数据来自于mysql，因此mysql数据发生改变时，elasticsearch也必须改变，即数据同步</p>
+<p>方案一：同步调用</p>
+<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230327162941480.png" alt="image-20230327162941480"></p>
+<p>方案二：</p>
+<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230327163140280.png" alt="image-20230327163140280"></p>
+<p>方案三：监听binlog</p>
+<p><img src="C:\Users\peanut\AppData\Roaming\Typora\typora-user-images\image-20230327163230858.png" alt="image-20230327163230858"></p>
+<h3 id="elasticsearch集群："><a href="#elasticsearch集群：" class="headerlink" title="elasticsearch集群："></a>elasticsearch集群：</h3><p>海量数据存储问题：将索引库从逻辑上拆分为N个分片，存储到多个节点</p>
+<p>单点故障问题：将分片数据在不同节点备份</p>
+<h2 id="微服务保护"><a href="#微服务保护" class="headerlink" title="微服务保护"></a>微服务保护</h2><h3 id="初识Sentinel："><a href="#初识Sentinel：" class="headerlink" title="初识Sentinel："></a>初识Sentinel：</h3><p>雪崩问题以及解决方案：</p>
+<p>微服务链路中调用某个服务故障，引起整个链路中的所有微服务都不可用，这就是雪崩。</p>
+<p>超时处理：设定超时时间，请求超过一定时间没有响应就返回错误信息，不会无休止等待。</p>
+<p>舱壁模式：限定每个业务能使用的线程数，避免耗尽整个tomcat的资源，也叫线程隔离。</p>
+<p>熔断降级：由短路器统计业务执行的异常比例，如果超出阈值则会熔断该业务，拦截访问该业务的一切请求。</p>
+<p>流量控制：限制业务访问的QPS，避免服务因流量的突增而故障。</p>
+<h3 id="安装Sentinel控制台："><a href="#安装Sentinel控制台：" class="headerlink" title="安装Sentinel控制台："></a>安装Sentinel控制台：</h3><p>去github上下载：<a target="_blank" rel="noopener" href="https://github.com/alibaba/Sentinel/releases/tag/1.8.1">https://github.com/alibaba/Sentinel/releases/tag/1.8.1</a></p>
+<p>运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar sentinel-dashboard-1.8.1.jar</span><br></pre></td></tr></table></figure>
+
+<p>访问本地8080端口，用户密码都是sentinel</p>
+<h3 id="微服务整合Sentinel："><a href="#微服务整合Sentinel：" class="headerlink" title="微服务整合Sentinel："></a>微服务整合Sentinel：</h3><p>在order-server中整合Sentinel，并且连接Sentinel控制台，步骤如下：</p>
+<p>1.引入sentinel依赖：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.配置控制台地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">	cloud:</span><br><span class="line">		sentinel:</span><br><span class="line">			transport:</span><br><span class="line">				dashboard: localhost:8080</span><br></pre></td></tr></table></figure>
+
+<p>3.访问微服务的任意端点，触发sentinel监控</p>
+<h3 id="限流规则："><a href="#限流规则：" class="headerlink" title="限流规则："></a>限流规则：</h3><p>簇点链路：</p>
+<p>项目中的调用链路，链路中被监控的每个接口就是一个资源。默认情况下sentinel会监控SpringMVC的每一个端点（Endpoint），因此SpringMVC的每一个端点就是调用链路中的一个资源。</p>
+<p>流控模是-关联：</p>
+<p>关联模式：统计与当前资源相关的另一个资源，触发阈值时，对当前资源限流。</p>
+<p>使用场景：比如用户支付时需要修改订单状态，同时用户要查询订单。查询和修改操作会争抢数据库锁，产生竞争。业务需求是有限支付和更新订单的业务，因此当修改订单业务触发阈值时，需要对查询订单业务限流。</p>
+<p>流控模式-链路：</p>
+<p>链路模式：只针对从指定链路访问到本资源的请求做统计，判断是否超过阈值。</p>
+<h3 id="隔离和降级："><a href="#隔离和降级：" class="headerlink" title="隔离和降级："></a>隔离和降级：</h3><p>Feign整合Sentinel</p>
+<p>在SpringCloud中，微服务调用都是通过Feign来实现的，客户端保护必须整合Feign和Sentinel，步骤如下：</p>
+<p>1.修改OrderService的application.yml文件，开启Feign的Sentinel功能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">	sentinel:</span><br><span class="line">		enabled: true</span><br></pre></td></tr></table></figure>
+
+<p>2.给FeignClient编写失败后的降级逻辑</p>
+<p>方式一：FallbackClass，无法对远程调用的异常做处理</p>
+<p>方式二：FallbackFactory，可以对远程调用的异常做处理，一般选这个</p>
+<p>熔断降级：</p>
+<p>其思路是由断路器统计服务调用的异常比例、慢请求比例，如果超出阈值则会熔断该服务。即拦截访问该服务的一切请求；当服务恢复时，断路器会放行访问该服务的请求。</p>
+<h2 id="分布式事务："><a href="#分布式事务：" class="headerlink" title="分布式事务："></a>分布式事务：</h2><p>事务的ACID原则：</p>
+<p>CAP定理：</p>
+<p>分布式系统有三个指标：</p>
+<p>Consistency（一致性）：用户访问分布式系统中的任意节点，得到的数据必须一致</p>
+<p>Availability（可用性）：用户访问集群中的任意健康节点，必须能得到响应，而不是超时或拒绝</p>
+<p>Partition tolerance（分区容错性）：因为网络故障或其他原因导致分布式系统中的部分节点与其他节点失去连接，形成独立分区，在集群出现分区时，整个系统也要持续对外提供服务</p>
+<p>分布式系统无法同时满足这三个指标</p>
+<p>BASE理论：</p>
+<p>对CAP的一种解决思路，包含三个思想：</p>
+<p>Basically Available：分布式系统在出现故障时，允许损失部分可用性，保证核心可用</p>
+<p>Soft State：在一定时间内，允许出现中间状态，比如临时的不一致状态</p>
+<p>Eventually Consistent：虽然无法保证强一致性，但是在软状态结束后，最终达到数据一致</p>
+<h3 id="分布式事务模型："><a href="#分布式事务模型：" class="headerlink" title="分布式事务模型："></a>分布式事务模型：</h3><p>解决分布式事务，各个子系统之间必须能感知到彼此事务状态，才能保证状态一致，因此需要一个事务协调者来协调每一个事务的参与者（子系统事务）。</p>
+<h3 id="初识Seata："><a href="#初识Seata：" class="headerlink" title="初识Seata："></a>初识Seata：</h3><p>由蚂蚁金服和阿里巴巴共同开发的开源分布式事务解决方案。</p>
+<p>官网地址：<a target="_blank" rel="noopener" href="http://seata.io/">http://seata.io/</a></p>
+<p>Seata事务管理中有三个重要的角色：</p>
+<p>TC（Transaction Coordinator）-事务协调者：维护全局和分支事务的状态，协调全局事务提交或回滚</p>
+<p>TM（Transaction Manager）-事务管理器：定义全局事务的范围、开始全局事务、提交或回滚全局事务</p>
+<p>RM（Resource Manager）-资源管理器：管理分支事务处理的资源，与TC交谈以注册分支事务和报告分支事务的状态，并驱动分支事务提交或回滚。</p>
+<h3 id="部署TC："><a href="#部署TC：" class="headerlink" title="部署TC："></a>部署TC：</h3><p>修改seata中conf配置的registry.conf中的注册和配置改为nacoos</p>
+<p>然后在nacos中添加seataServer.properties</p>
+<h3 id="微服务集成Seata："><a href="#微服务集成Seata：" class="headerlink" title="微服务集成Seata："></a>微服务集成Seata：</h3><p>1.首先，引入seata相关依赖：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--seata--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;</span><br><span class="line">            &lt;exclusions&gt;</span><br><span class="line">                &lt;exclusion&gt;</span><br><span class="line">                    &lt;artifactId&gt;seata-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">                    &lt;groupId&gt;io.seata&lt;/groupId&gt;</span><br><span class="line">                &lt;/exclusion&gt;</span><br><span class="line">            &lt;/exclusions&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;io.seata&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;seata-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;seata.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.然后，配置application.yml，让微服务通过注册中心找到seata-tc-server:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">seata:</span><br><span class="line">  registry:</span><br><span class="line">    type: nacos</span><br><span class="line">    nacos:</span><br><span class="line">      server-addr: 127.0.0.1:8848</span><br><span class="line">      namespace: &quot;&quot;</span><br><span class="line">      group: DEFAULT_GROUP</span><br><span class="line">      application: seata-tc-server</span><br><span class="line">      username: nacos</span><br><span class="line">      password: nacos</span><br><span class="line">  tx-service-group: seata-demo # 事务组名称</span><br><span class="line">  service:</span><br><span class="line">    vgroup-mapping: # 事务组与cluster的映射关系</span><br><span class="line">      seata-demo: SH</span><br></pre></td></tr></table></figure>
+
+<h3 id="几种模式原理："><a href="#几种模式原理：" class="headerlink" title="几种模式原理："></a>几种模式原理：</h3><h4 id="XA模式："><a href="#XA模式：" class="headerlink" title="XA模式："></a>XA模式：</h4><p>XA规范描述了全局的TM与局部的RM之间的接口，几乎所有主流的数据库都对XA规范提供了支持。</p>
+<p>实现XA模式：</p>
+<p>1.修改application.yml文件（要参与事务的微服务）开启XA模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">seata:</span><br><span class="line">	data-source-proxy-mode: XA</span><br></pre></td></tr></table></figure>
+
+<p>2.给发起全局事务的入口方法添加@GlobalTransaction注解，本例中是OrderServiceImpl中的create方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">@GlobalTransactional</span><br><span class="line">public Long create(Order order)&#123;</span><br><span class="line">	orderMapper.insert(order);</span><br><span class="line">	</span><br><span class="line">	return order.getId();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.重启服务并测试</p>
+<h4 id="AT模式原理："><a href="#AT模式原理：" class="headerlink" title="AT模式原理："></a>AT模式原理：</h4><p>同样是分段提交的事务模型，弥补了XA模式中资源锁定周期过长的缺陷。</p>
+<p>在RM中执行sql并提交，记录更新前后快照，undo-log</p>
+<p>实现AT模式</p>
+<p>AT模式的快照生成、回滚等动作都是由框架自动完成，没有任何代码侵入，实现简单。</p>
+<p>1.首先导入提供的测试Sql文件：seata-at.sql,其中lock_table导入到TC服务关联的数据库，undo_log表导入到微服务关联的数据库: seata-at.sql</p>
+<p>2.修改application.yml，奖事务模式修改为AT模式即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">seata：</span><br><span class="line">	data-source-proxy-mode: AT</span><br></pre></td></tr></table></figure>
+
+<p>3.重启服务并测试</p>
+<h4 id="TCC模式原理："><a href="#TCC模式原理：" class="headerlink" title="TCC模式原理："></a>TCC模式原理：</h4><p>TCC模式与AT模式相似，每阶段都是独立事务，不同的是TCC通过人工编码来实现数据恢复。需要实现三个方法：</p>
+<p>Try：资源的检测和预留</p>
+<p>Confirm：完成资源操作业务；要求Try成功Confirm一定能成功</p>
+<p>Cancel：预留资源释放，可以理解为try的反向操作</p>
+<h4 id="Saga模式："><a href="#Saga模式：" class="headerlink" title="Saga模式："></a>Saga模式：</h4><p>长事务解决方案。分为两个阶段：</p>
+<p>一阶段：直接提交本地事务</p>
+<p>二阶段：成功则什么都不做；失败则通过编写补偿业务回滚</p>
+<h2 id="分布式缓存："><a href="#分布式缓存：" class="headerlink" title="分布式缓存："></a>分布式缓存：</h2><p>单点Redis的问题：</p>
+<p>数据丢失问题：实现Redis数据持久化</p>
+<p>并发能力问题：搭建主从集群，实现读写分离</p>
+<p>存储能力问题：搭建分片集群，利用插槽机制实现动态扩容</p>
+<p>故障恢复问题：利用Redis哨兵，实现健康检测和自动恢复</p>
+<h3 id="Redis持久化："><a href="#Redis持久化：" class="headerlink" title="Redis持久化："></a>Redis持久化：</h3><h4 id="RDB持久化："><a href="#RDB持久化：" class="headerlink" title="RDB持久化："></a>RDB持久化：</h4><p>Redis Database Backup file （Redis数据备份文件），也叫Redis数据快照。简单来说就是把内存中的所有数据记录到磁盘中。当Redis实例故障重启后，从磁盘读取快照文件，恢复数据。</p>
+<p>快照文件称为RDB文件，默认是保存在当前运行目录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis-cli</span><br><span class="line">save #由Redis主进程来执行RDB，会阻塞所有命令</span><br><span class="line">bgsave #开启子进程执行RDB，避免主进程收到影响</span><br></pre></td></tr></table></figure>
+
+<p>Redis内部由触发RDB的机制，可以在redis.conf文件中找到，格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#900秒内，如果至少有1个key被修改，则执行bgsave，如果是save &quot;&quot; 则表示禁用RDB</span><br><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+
+<p>RDB的其他配置也可以在redis.conf文件中设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#是否压缩，建议不开启，压缩也会消耗cpu，磁盘的话不值钱</span><br><span class="line">rdbcompression yes</span><br><span class="line"></span><br><span class="line">#RDB文件名称</span><br><span class="line">dbfilename dump.rdb</span><br><span class="line"></span><br><span class="line">#文件保存的路径目录</span><br><span class="line">dir ./</span><br></pre></td></tr></table></figure>
+
+<h4 id="RDB原理："><a href="#RDB原理：" class="headerlink" title="RDB原理："></a>RDB原理：</h4><p>bgsave开始时会fork主进程得到子进程，子进程共享主进程的内存数据。完成fork后读取内存数据并写入RDB文件。</p>
+<p>fork采用的是copy-on-write技术：</p>
+<p>当主进程执行读操作时，访问共享内存</p>
+<p>当主进程执行写操作时，则会拷贝一份数据，执行写操作</p>
+<h4 id="AOF持久化："><a href="#AOF持久化：" class="headerlink" title="AOF持久化："></a>AOF持久化：</h4><p>AOF全称为Append Only File（追加文件）。Redis处理的每一个命令都会记录在AOF文件，可以看做是命令日志文件。</p>
+<p>AOF默认是关闭的，需要修改redis.conf配置文件来开启：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes</span><br><span class="line">appendfilename &quot;appendonly.aof&quot;</span><br></pre></td></tr></table></figure>
+
+<p>AOF的命令记录的频率也可以通过redis.conf文件来配：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#表示执行一次命令，立即记录到AOF文件</span><br><span class="line">appendfsync always</span><br><span class="line">#写命令执行完先放入AOF缓冲区，然后每隔1秒将缓冲数据写到AOF文件，是默认方案</span><br><span class="line">appendfsync everysec</span><br><span class="line">#写命令执行完先放入AOF缓冲区，由操作系统决定何时将缓冲区内容写回磁盘</span><br><span class="line">appendfsync no </span><br></pre></td></tr></table></figure>
+
+<p>因为是记录命令，AOF文件会比RDB文件大的多。而且AOF会记录对同一个key的多次写操作，但只有最后一次才有意义。通过执行bgrewriteaof命令，可以让AOF文件执行重写功能</p>
+<p>Redis也会在触发阈值时自动去重写AOF文件，阈值也可以在redis.conf中配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#AOF文件比上次文件 增长超过多少百分比则触发重写</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">#AOF文件体积最小多大以上才触发重写</span><br><span class="line">auto-aof-rewrite-min-size 64mb</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis主从："><a href="#Redis主从：" class="headerlink" title="Redis主从："></a>Redis主从：</h3><h4 id="搭建主从架构："><a href="#搭建主从架构：" class="headerlink" title="搭建主从架构："></a>搭建主从架构：</h4><p>单点Redis的并发能力有上限，要进一步提高Redis的并发能力，就需要搭建主从集群，实现读写分离。</p>
+<p>共三个节点，一个主节点，两个从节点。</p>
+<p>为了模拟真实场景，在同一台虚拟机中开启3个redis实例，信息如下：</p>
+<p>主机IP地址-三个PORT:7001-7003</p>
+<p>1.准备实例和配置</p>
+<p>在同一台虚拟机中开启3个实例，必须准备三份不同的配置文件和目录，配置文件所在目录即工作目录。</p>
+<p>例如创建三个文件夹，名字分别为7001，7002，7003</p>
+<p>将redis-4.0.0&#x2F;redis.conf文件拷贝到三个目录中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp redis-4.0.0/redis.conf 7001</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>修改每个文件夹内的配置文件，将端口分别修改为7001、7002、7003，将rdb文件保存位置都修改为自己所在目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -i -e &#x27;s/6379/7001/g&#x27; -e &#x27;s/dir .\//dir \/local\/7001\//g&#x27; 7001/redis.conf</span><br><span class="line">sed -i -e &#x27;s/6379/7002/g&#x27; -e &#x27;s/dir .\//dir \/local\/7002\//g&#x27; 7002/redis.conf</span><br><span class="line">sed -i -e &#x27;s/6379/7003/g&#x27; -e &#x27;s/dir .\//dir \/local\/7003\//g&#x27; 7003/redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>修改每个实例的声明IP</p>
+<p>虚拟机本身有多个IP，避免混乱，在redis.conf文件中指定每一个实例的绑定ip信息，格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">replica-announce-ip 192.168.124.100</span><br></pre></td></tr></table></figure>
+
+<p>每个都修改，即</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;1a replica-announce-ip 192.168.124.100&#x27; 7001/redis.conf</span><br><span class="line">sed -i &#x27;1a replica-announce-ip 192.168.124.100&#x27; 7002/redis.conf</span><br><span class="line">sed -i &#x27;1a replica-announce-ip 192.168.124.100&#x27; 7003/redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>2.启动</p>
+<p>redis-server .&#x2F;redis.conf</p>
+<p>开启主从关系</p>
+<p>三个实例没有任何关系，配置主从可以使用replicaof 或者slaveof 命令</p>
+<p>有临时和永久两种模式：</p>
+<p>修改配置文件（永久生效）</p>
+<p>​	在redis.conf中添加一行配置：slaveof <masterip> <masterport></p>
+<p>使用redis-cli客户端连接到redis服务，执行slaveof命令（重启后失效）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slaveof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="数据同步原理："><a href="#数据同步原理：" class="headerlink" title="数据同步原理："></a>数据同步原理：</h4><p>主从第一步同步是全量同步，slave重启后，则执行增量同步。</p>
+<p><img src="D:\Apple\项目\研究生课程资料\Typora\图片\image-20230402200837162.png" alt="image-20230402200837162"></p>
+<p>master怎么判断slave是不是第一次同步数据？</p>
+<p>Replication Id: 数据集的标记，id一致则说明是同一数据集。每一个master都有唯一的id，slave则会集成master节点的id</p>
+<p>offset: 偏移量，随着记录在repl_baklog中的数据增多而逐渐增大。slave完成同步时会记录当前同步的offset。如果slave的offset小于master的offset，则说明slave数据落后于mater，需要更新</p>
+<h3 id="Redis哨兵："><a href="#Redis哨兵：" class="headerlink" title="Redis哨兵："></a>Redis哨兵：</h3><h4 id="哨兵的作用和原理："><a href="#哨兵的作用和原理：" class="headerlink" title="哨兵的作用和原理："></a>哨兵的作用和原理：</h4><p>实现主从集群的自动故障恢复。</p>
+<p>监控：Sentinel会不断检查master和slave是否按照预期工作</p>
+<p>自动故障恢复：如果master故障，Sentinel会将一个slave提升为master。当故障实例恢复后也以新的master为主</p>
+<p>通知：Sentinel充当Redis客户端的服务发现来源，当集群发生故障转移时，会将最新信息推送给Redis的客户端</p>
+<p>Sentinel基于心跳机制监测服务状态，每隔1秒向集群的每个实例发送ping命令：</p>
+<p>​	主观下线：如果某Seniel节点发现某实例未在规定实践响应，则认为改实例主观下线</p>
+<p>​	客观下线：若超过指定数量的sentinel都认为该实例主观下线，则该实例客观下线</p>
+<p>选新的master：</p>
+<p>​	首先判断slave节点与master节点断开时间长短，如果超过指定值（down-after-milliseconds*10）则会排除该slave节点</p>
+<p>​	然后，判断slave节点的slave-priority值，越小优先级越高</p>
+<p>​	如果slave-priority一样，则判断slave节点的offset值，越大则数据越新，优先级别越高</p>
+<p>​	最后判断slave节点的运行id大小，越小优先级越高</p>
+<p>故障转移：</p>
+<p>​	sentinel给备选的slave1节点发送 slaveof no one命令，使其成为master</p>
+<p>​	sentinel给所有其他的slave发送slaveof <masterip> <masterport>，配置主从关系</p>
+<p>​	最后，sentinel将故障节点标记未slave，当故障节点恢复后会自动成为新的master的slave节点</p>
+<h4 id="搭建哨兵结构："><a href="#搭建哨兵结构：" class="headerlink" title="搭建哨兵结构："></a>搭建哨兵结构：</h4><p>搭建一个三节点形成的Sentinel集群，来监管之前的Redis主从集群。</p>
+<p>准备三个Sentinel实例，配置ip地址和端口，PORT 为27001、27002、27003</p>
+<p>准备实例和配置</p>
+<p>创建Sentinel的文件目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mikdir s1 s2 s3</span><br></pre></td></tr></table></figure>
+
+<p>在s1目录中创建一个sentinel.conf文件，添加如下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">port 27001</span><br><span class="line">sentinel announce-ip 192.168.124.100</span><br><span class="line">sentinel monitor mymaster 192.168.124.100 7001 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 5000</span><br><span class="line">sentinel failover-timeout mymaster 60000</span><br><span class="line">dir &quot;/usr/local/s1&quot;</span><br></pre></td></tr></table></figure>
+
+<p>启动</p>
+<p>分别启动3个redis实例，启动命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 第1个</span><br><span class="line">redis-sentinel s1/sentinel.conf</span><br><span class="line"># 第2个</span><br><span class="line">redis-sentinel s2/sentinel.conf</span><br><span class="line"># 第3个</span><br><span class="line">redis-sentinel s3/sentinel.conf</span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<h4 id="Redis-Template的哨兵模式"><a href="#Redis-Template的哨兵模式" class="headerlink" title="Redis Template的哨兵模式"></a>Redis Template的哨兵模式</h4><p>在Sentinel集群监管下的Redis主从集群，其节点会因为自动故障转移而发生变化，Redis的客户端必须感知这种变化，即使更新连接信息。Spring的RedisTemplate底层利用lettuce实现了节点的感知和自动切换。</p>
+<p>首先，引入课前资料提供的Demo工程：</p>
+<p>然后在pom文件中引入redis的starter依赖：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;denpendency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>接着在配置文件application.yml中指定sentinel相关信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">spring：</span><br><span class="line">	redis：</span><br><span class="line">		sentinel:</span><br><span class="line">			master: mymaster</span><br><span class="line">			nodes:</span><br><span class="line">				-IP:27001</span><br><span class="line">				-IP:27002</span><br><span class="line">				-IP:27003</span><br></pre></td></tr></table></figure>
+
+<p>配置主从读写分离</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">public LettuceClientConfigurationBuilderCustomizer ConfigurationBuilderCustomizer()&#123;</span><br><span class="line">	return configBuilder -&gt; configBuilder.readForm(ReadForm.REPLICA_PREFERRED)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ReadForm是配置Redis的读取策略，是一个枚举，有以下选项：</p>
+<p>MASTER：主从节点读取</p>
+<p>MASTER_PREFERRED：优先从master节点读取，master不可用才读取replica</p>
+<p>REPLICA：从slave节点读取</p>
+<p>REPLICA_PREFERRED：优先从slave节点读取，所有的slave都不可用才读取master</p>
+<h3 id="Redis分片集群"><a href="#Redis分片集群" class="headerlink" title="Redis分片集群"></a>Redis分片集群</h3><p>主从和哨兵可以解决高可用、高并发读的问题。但是依然有两个问题没有解决：</p>
+<p>海量数据存储问题</p>
+<p>高并发写的问题</p>
+<p>使用分片集群可以解决上述问题，分片集群特征：</p>
+<p>集群中有多个master，每个master保存不同数据</p>
+<p>每个master都可以有多个slave节点</p>
+<p>master之间通过ping监测彼此健康状态</p>
+<p>客户端请求可以访问集群任意节点，最终都会被转发到正确节点</p>
+<h4 id="搭建分片集群："><a href="#搭建分片集群：" class="headerlink" title="搭建分片集群："></a>搭建分片集群：</h4><p>准备实例，创建6个文件夹</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir 7001 7002 7003 8001 8002 8003</span><br></pre></td></tr></table></figure>
+
+<p>在&#x2F;tmp下准备一个新的redis.conf文件，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">port 6379</span><br><span class="line">cluster-enabled yes</span><br><span class="line">#集群的配置文件，不需要我们创建，redis自己维护</span><br><span class="line">cluster-config-file /tmp/6379/nodes.conf</span><br><span class="line">#节点心跳失败时间</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line">#持久化存放目录</span><br><span class="line">dir /tmp/6379</span><br><span class="line">#绑定地址</span><br><span class="line">bind 0.0.0.</span><br><span class="line">#redis后台运行</span><br><span class="line">daemonize yes</span><br><span class="line">#注册的实际IP</span><br><span class="line">replica-announce-ip 192.168.150.101</span><br><span class="line">#保护模式</span><br><span class="line">protected-mode no</span><br><span class="line">#数据库数量</span><br><span class="line">databases 1</span><br><span class="line">#日志</span><br><span class="line">logfile /tmp/6379/run.log</span><br></pre></td></tr></table></figure>
+
+<p>将这个配置文件拷贝到每个目录下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 7001 7002 7003 8001 8002 8003 | xargs -t -n l cp redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>修改每个目录下的redis.conf，将其中的6379修改为与所在目录一致：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printf &#x27;%s\n&#x27; 7001 7002 7003 8001 8002 8003 | xargs -I&#123;&#125; -t sed -i &#x27;s/6379/&#123;&#125;/g&#x27; &#123;&#125;/redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>启动</p>
+<p>配置了后台启动模式，所以可以直接启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printf &#x27;%s\n&#x27; 7001 7002 7003 8001 8002 8003 |xargs -I&#123;&#125; -t redis-server &#123;&#125;/redis.conf</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h4><p>Redis5.0以后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli --cluster create --cluster-replicas l 192.168.150.101:7001 192.168.150.101:7002 192.168.150.101:7003 192.168.150.101:8001 192.168.150.101:8002 192.168.150.101:8003</span><br></pre></td></tr></table></figure>
+
+<p>注释：</p>
+<p>redis-cli –cluster 或者 .&#x2F;redis-trib.rb ：代表集群操作命令</p>
+<p>查看集群状态</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -p 7001 cluster nodes</span><br></pre></td></tr></table></figure>
+
+<h4 id="散列插槽"><a href="#散列插槽" class="headerlink" title="散列插槽"></a>散列插槽</h4><p>Redis会把每一个master节点映射到0~16383共16384个插槽上，查看集群信息时就能看到</p>
+<p>数据key不是与节点绑定，而是与插槽绑定。redis会根据key的有效部分计算插槽值，分两种情况：</p>
+<p>key中包含“{}”且“{}”中至少包含1个字符，“{}”中的部分是有效部分</p>
+<p>key中不包含“{}”，整个key都是有效部分</p>
+<h4 id="故障转移"><a href="#故障转移" class="headerlink" title="故障转移"></a>故障转移</h4><p>当集群中有一个master挂了的场景：</p>
+<p>1.首先是该实例与其他实例失去连接</p>
+<p>2.然后是疑似宕机</p>
+<p>3.最后是确定下线，自动提升一个slave为新的master</p>
+<p>利用cluster failover命令可以手动让集群中的某个master宕机，切换到执行cluster failover命令的这个slave节点，实现无感知的数据迁移。</p>
+<h4 id="RedisTemplate访问分片集群"><a href="#RedisTemplate访问分片集群" class="headerlink" title="RedisTemplate访问分片集群"></a>RedisTemplate访问分片集群</h4><p>RedisTemplate底层同样基于lettuce实现了分片集群的支持，而使用的步骤与哨兵模式基本一致：</p>
+<p>1.引入redis的starter依赖</p>
+<p>2.配置分片集群地址</p>
+<p>3.配置读写分离</p>
+<h3 id="多级缓存"><a href="#多级缓存" class="headerlink" title="多级缓存"></a>多级缓存</h3><p>传统缓存的问题：请求到达Tomcat，先查询redis，如果未命中则查询数据库，这样的话，Tomcat的性能成为整个系统的瓶颈；而且Redis失效时，会对数据库产生冲击</p>
+<p>多级缓存就是充分利用请求处理的每个环节，分别添加缓存，减轻Tomcat压力，提升服务性能</p>
+<h4 id="JVM进程缓存"><a href="#JVM进程缓存" class="headerlink" title="JVM进程缓存"></a>JVM进程缓存</h4><p>缓存：</p>
+<p>分布式缓存：</p>
+<p>优点：存储容量更大、可靠性更好、可以在集群间共享</p>
+<p>缺点：访问缓存有网络开销</p>
+<p>场景：缓存数据量较大、可靠性要求高、需要在集群间共享</p>
+<p>进程本地缓存：</p>
+<p>优点：读取本地内存，没有网络开销，速度更快</p>
+<p>缺点：存储容量有限，可靠性较低，无法共享</p>
+<p>场景：性能要求较高，缓存数据量较小</p>
+<p>Caffeine是一个近乎最佳命中率性能的本地缓存技术。</p>
+<p>Caffeine提供了三种缓存驱逐策略：</p>
+<p>基于容量：设置缓存的数量上限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cacha&lt;String,String&gt; cache = Caffeine.newBuilder().maximumSize(1).build();</span><br></pre></td></tr></table></figure>
+
+<p>基于时间：设置缓存的有效时间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cacha&lt;String,String&gt; cache = Caffeine.newBuilder().expireAfterWrite(Duration.ofSeconds(10)).build();</span><br></pre></td></tr></table></figure>
+
+<p>基于引用：设置缓存为软引用或弱引用，利用GC来回收缓存数据。性能较差</p>
+<h4 id="Lua语法入门"><a href="#Lua语法入门" class="headerlink" title="Lua语法入门"></a>Lua语法入门</h4><p>Lua是一种轻量小巧的脚本语言，用标准C语言编写并以源代买形式开放，其设计的目的是为了嵌入式应用程序中，从而为应用程序提供灵活的扩展和定制功能。</p>
+<p>编写Helloworld</p>
+<p>1.在Linux虚拟机的任意目录下，新建一个helloworld.lua</p>
+<p>2.在文件中写</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;Hello World&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>3.运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lua helloworld.lua</span><br></pre></td></tr></table></figure>
+
+<p>数据类型</p>
+<p>nil——表示无效值，在条件表达式中相当于false</p>
+<p>boolean——表示false和true</p>
+<p>number——表示双精度类型的实浮点数</p>
+<p>string——字符串由一对双引号或单引号来表示</p>
+<p>function—–由C或Lua编写的函数</p>
+<p>table——Lua中的表其实是一个“关联数组”，数组的索引可以是数字、字符串或表类型</p>
+<h4 id="多级缓存-1"><a href="#多级缓存-1" class="headerlink" title="多级缓存"></a>多级缓存</h4><p>安装OpenResty</p>
+<p>基于Nginx的高性能Web平台</p>
+<p>1.安装依赖库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y pcre-devel openssl-devel gaa --skip-broken</span><br></pre></td></tr></table></figure>
+
+<p>2.安装仓库管理</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum-config-manager --add-repo https://openresty.org/package/centos/openresty.repo</span><br></pre></td></tr></table></figure>
+
+<p>3.安装OpenResty</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y openresty</span><br></pre></td></tr></table></figure>
+
+<p>4.安装opm工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y openresty-opm</span><br></pre></td></tr></table></figure>
+
+<p>使用案例：</p>
+<p>步骤一：修改nginx.conf文件</p>
+<p>1.在nginx加载lua模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#加载lua 模块</span><br><span class="line">Lua_package_path &quot;/usr/local/openresty/lualib/?.lua;;&quot;;</span><br><span class="line">#加载c模块</span><br><span class="line">lua_package_cpath &quot;/usr/local/openresty/lualib/?.so;;&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>2.在nginx.conf的server下面，添加对&#x2F;api&#x2F;item这个路径的监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location /api/item &#123;</span><br><span class="line">	#响应类型 这里是返回json</span><br><span class="line">	default_type application/json;</span><br><span class="line">	#响应数据由 lua/item.lua这个文件来决定</span><br><span class="line">	content_by_lua_file lua/item.lua;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤二：编写item.lua文件</p>
+<p>1.在nginx目录创建文件夹:lua</p>
+<p>2.在lua文件夹下，新建文件：item.lua</p>
+<p>3.添加内容</p>
+<p>4.重新加载配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<h4 id="缓存同步"><a href="#缓存同步" class="headerlink" title="缓存同步"></a>缓存同步</h4><p>缓存同步策略：</p>
+<p><strong>设置有效期</strong>：给缓存设置有效期，到期后自动删除。再次查询时更新</p>
+<p>优势：简单、方便</p>
+<p>缺点：失效性差，缓存过期之前可能不一致</p>
+<p>场景：更新频率较低，时效性要求低的业务</p>
+<p><strong>同步双写</strong>：在修改数据库的同时，直接修改缓存</p>
+<p>优势：时效性强，缓存与数据库强一致</p>
+<p>缺点：有代码侵入，耦合度高</p>
+<p>场景：对一致性、时效性要求较高的缓存数据</p>
+<p><strong>异步通知</strong>：修改数据库时发送事件通知，相关服务监听到通知后修改缓存数据</p>
+<p>优势：低耦合，可以同时通知多个缓存服务</p>
+<p>缺点：时效性一般，可能存在中间不一致状态</p>
+<p>场景：失效性要求一般，有多个服务需要同步</p>
+<h4 id="Canal"><a href="#Canal" class="headerlink" title="Canal"></a>Canal</h4><p>基于java开发。基于数据库增量日志解析，提供增量数据订阅&amp;消费。</p>
+<p><strong>安装Canal</strong></p>
+<p>1.创建一个网络</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">创建一个网络，将Mysql、Canal、MQ放到同一个Docker网络中</span><br><span class="line">docker network create heima</span><br><span class="line">让mysql加入这个网络</span><br><span class="line">docker network connect heima mysql</span><br></pre></td></tr></table></figure>
+
+<p>2.安装Canal</p>
+<p>将canal.tar上传到虚拟机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i canal.tar</span><br></pre></td></tr></table></figure>
+
+<p>然后运行命令创建Canal容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 1111:1111 --name canal \</span><br><span class="line">-e canal.destinations=heima \</span><br><span class="line">-e canal.instance.master.address=mysql:3306 \</span><br><span class="line">-e canal.instance.dbUsername=canal \</span><br><span class="line">-e canal.instance.dbPassword=canal \</span><br><span class="line">-e canal.instance.connectionCharaset=UTF-8 \</span><br><span class="line">-e canal.instance.tsdb.enable=true \</span><br><span class="line">-e canal.instance.gtidon=false \</span><br><span class="line">-e canal.instance.filter.regex=heima\\..* \</span><br><span class="line">--network heima \</span><br><span class="line">-d canal/canal-server:v1.1.5</span><br></pre></td></tr></table></figure>
+
+<h1 id="配置中心Apollo"><a href="#配置中心Apollo" class="headerlink" title="配置中心Apollo"></a>配置中心Apollo</h1><p>分布式配置中心，能过集成化管理应用不同环境、不同集群的配置，配置好后可以热发布。</p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="application应用"><a href="#application应用" class="headerlink" title="application应用"></a>application应用</h3><p>实际使用配置的应用，每个应用都需要有唯一的身份标识–appId</p>
+<h3 id="environment环境"><a href="#environment环境" class="headerlink" title="environment环境"></a>environment环境</h3><p>配置对应的环境，环境就是读取机器上的配置（server.properties中的env属性）</p>
+<h3 id="cluster集群"><a href="#cluster集群" class="headerlink" title="cluster集群"></a>cluster集群</h3><p>一个应用下不同实例的分组，对不同的cluster，同一个配置可以有不一样的</p>
+<h3 id="namespace命名空间"><a href="#namespace命名空间" class="headerlink" title="namespace命名空间"></a>namespace命名空间</h3><p>一个应用下不同配置的分组，可以简单的namespace类比为文件，不同类型的配置存放在不同的文件中，如数据库配置文件，rpc配置文件，应用自身的配置文件等</p>
+<h2 id="Apollo特性"><a href="#Apollo特性" class="headerlink" title="Apollo特性"></a>Apollo特性</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1.apollo统一管理不同环境、不同集群的配置</span><br><span class="line">2.配置修改实时生效（热发布）</span><br><span class="line">3.版本发布管理</span><br><span class="line">4.灰度发布</span><br><span class="line">5.权限管理、发布审核、操作审计</span><br><span class="line">6.客户端配置信息监控</span><br><span class="line">7.提供Java和.Net原生客户端</span><br><span class="line">8.提供开放平台API</span><br><span class="line">9.部署简单</span><br></pre></td></tr></table></figure>
+
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><p>操作人员—发布配置—&gt;Portal—发布配置—&gt;Admin Service—发送ReleaseMessage—&gt;Config Service—通知客户端—&gt;酷虎端</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>操作人员—&gt;Apollo配置中心&lt;—&gt;本地应用容器</p>
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><p>环境准备</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jdk1.8+</span><br><span class="line">Mysql 5.6.0+</span><br><span class="line">github下载安装包：https://github.com/nobodyiam/apollo-build-scripts</span><br></pre></td></tr></table></figure>
+
+<p>下载好后解压，运行两个sql脚本文件，创建出portaldb和configdb</p>
+<p>安装apollo</p>
+<p>1.创建数据库</p>
+<p>apollo服务端共需要两个数据库：ApolloPortalDB和ApolloConfigDB</p>
+<p>2.配置数据库连接信息</p>
+<p>apollo服务端需要知道如何连接到你前面创建的数据库，所以需要编辑demo.sh，修改ApolloPortalDB和ApolloConfigDB相关的数据库连接信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#apollo config db info</span><br><span class="line">apollo.config_db_url=jdbc://mysql://localhost:3306/ApolloConfigDB?characterEncoding=utf8</span><br><span class="line">apollo_config_db_username=xxx</span><br><span class="line">apollo_config_db_password=xxx</span><br><span class="line"></span><br><span class="line">#apollo portal db info</span><br><span class="line">apollo.portal_db_url=jdbc://mysql://localhost:3306/ApolloPortalDB?characterEncoding=utf8</span><br><span class="line">apollo_portal_db_username=xxx</span><br><span class="line">apollo_portal_db_password=xxx</span><br></pre></td></tr></table></figure>
+
+<p>搭建服务端</p>
+<p>quick start脚本会在本地启动3个服务，分别是8070、8080、8090端口，确保3个端口未被占用</p>
+<p>执行启动脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./demo.sh start</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端接入服务端"><a href="#客户端接入服务端" class="headerlink" title="客户端接入服务端"></a>客户端接入服务端</h3><p>通过最简单的方式，Spring-Boot的集成方式来接入服务端</p>
+<p>apollo-demo聚合工程：spring boot 2.2.4.RELEASE</p>
+<p>order-service：订单服务端口：9090</p>
+<p>order-service02：订单服务端口：9091</p>
+<p>添加依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.ctrip.framework.apollo&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;apollo-client&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;1.6.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在启动类上添加注解</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@EnableApolloConfig</span><br></pre></td></tr></table></figure>
+
+<h1 id="应用监控CAT"><a href="#应用监控CAT" class="headerlink" title="应用监控CAT"></a>应用监控CAT</h1><p>由大众点评开源的一款调用链监控系统，基于java开发。</p>
+<p>聚合报表功能，中文支持性好</p>
+<h2 id="cat报表介绍"><a href="#cat报表介绍" class="headerlink" title="cat报表介绍"></a>cat报表介绍</h2><p>Transaction报表：一段代码的运行时间、次数；比如URL&#x2F;cache&#x2F;sql执行次数相应时间</p>
+<p>Event报表：一段代码运行次数，比如出现一次异常</p>
+<p>Problem报表：根据Transaction&#x2F;Event数据分析出系统可能出现的一次，慢程序</p>
+<p>Heartbeat报表：JVM状态信息</p>
+<p>Business报表：业务指标等，用户可以自己定制</p>
+<h2 id="cat基础"><a href="#cat基础" class="headerlink" title="cat基础"></a>cat基础</h2><h3 id="Linux下安装"><a href="#Linux下安装" class="headerlink" title="Linux下安装"></a>Linux下安装</h3><p>下载地址(<a target="_blank" rel="noopener" href="https://github.com/dianping/cat/tree/master">https://github.com/dianping/cat/tree/master</a>)</p>
+<p>环境要求：</p>
+<p>Linux2.6及以上，线上服务端部署请使用Linux环境，Mac以及Windows环境可以作为开发环境，美团点评内部CentOS6.5</p>
+<p>java 6，7，8</p>
+<p>maven3及以上</p>
+<p>Mysql5.6，5.7，高版本不清楚兼容性</p>
+<h4 id="数据库安装"><a href="#数据库安装" class="headerlink" title="数据库安装"></a>数据库安装</h4><p>数据库脚本文件script&#x2F;CatApplication.sql</p>
+<h3 id="windows下安装"><a href="#windows下安装" class="headerlink" title="windows下安装"></a>windows下安装</h3><p>禁用虚拟网卡</p>
+<p>在windows下安装，首先将虚拟网卡都禁用，防止CAT使用虚拟网卡的ip地址</p>
+<h4 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h4><p>在windows的环境变量中，配置CAT_HOME变量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\data\appdatas\cat</span><br></pre></td></tr></table></figure>
+
+<p>修改中文乱码tomcat conf目录下server.xml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;</span><br><span class="line">	URIEncoding=&quot;utf-8&quot; connectionTimeout=&quot;20000&quot;</span><br></pre></td></tr></table></figure>
+
+<p>配置&#x2F;data&#x2F;appdatas&#x2F;cat&#x2F;client.xml</p>
+<p>配置&#x2F;data&#x2F;appdatas&#x2F;cat&#x2F;datasource.xml</p>
+<p>然后把war包放在tomcat的webapps下，然后启动tomcat即可</p>
+<h3 id="客户端集成简单案例"><a href="#客户端集成简单案例" class="headerlink" title="客户端集成简单案例"></a>客户端集成简单案例</h3><p>1.新建一个springboot-cat的项目</p>
+<p>2.在该项目中引入cat-client的依赖，可以在源码中maven install，也可以在网上下一个jar包</p>
+<p>3.写一个log通知类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;test&quot;)</span><br><span class="line">    public String test()&#123;</span><br><span class="line">        Transaction t= Cat.newTransaction(&quot;URL&quot;,&quot;pageName&quot;);</span><br><span class="line">        try &#123;</span><br><span class="line">            Cat.logEvent(&quot;URL.server&quot;,&quot;serverIp&quot;, Event.SUCCESS,&quot;ip=127.0.0.1&quot;);</span><br><span class="line">            Cat.logMetricForCount(&quot;metric.key&quot;);</span><br><span class="line">            Cat.logMetricForCount(&quot;metric.key&quot;,5);</span><br><span class="line">            int i=1/0;</span><br><span class="line">            t.setStatus(Transaction.SUCCESS);</span><br><span class="line">        &#125;catch (Exception e)&#123;</span><br><span class="line">            t.setStatus(e);</span><br><span class="line">        &#125;finally &#123;</span><br><span class="line">            t.complete();</span><br><span class="line">        &#125;</span><br><span class="line">        return &quot;hello&quot;;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>就可以在cat中看到url的日志通知</p>
+<h2 id="报表类"><a href="#报表类" class="headerlink" title="报表类"></a>报表类</h2><h3 id="Transaction"><a href="#Transaction" class="headerlink" title="Transaction"></a>Transaction</h3><p>适合记录跨越边界的程序访问行为，比如远程调用、数据库调用等，也适合执行时间较长的业务逻辑监控，Transaction用来记录一段代码的执行时间和次数</p>
+<h4 id="扩展API"><a href="#扩展API" class="headerlink" title="扩展API"></a>扩展API</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">addData 添加额外的数据显示</span><br><span class="line">setStatus 设置状态，成功可以设置SUCCESS,失败可以设置成异常</span><br><span class="line">setDurationInMills 设置执行耗时</span><br><span class="line">setTimestamp 设置执行时间</span><br><span class="line">complete 结束Transaction</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/13/%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.</span> <span class="nav-text">微服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A4%E8%AF%86%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text">认识微服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">单体架构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">1.1.2.</span> <span class="nav-text">分布式架构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%EF%BC%9A"><span class="nav-number">1.1.3.</span> <span class="nav-text">微服务：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8A%80%E6%9C%AF%E5%AF%B9%E6%AF%94%EF%BC%9A"><span class="nav-number">1.1.4.</span> <span class="nav-text">微服务技术对比：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringCloud%EF%BC%9A"><span class="nav-number">1.1.5.</span> <span class="nav-text">SpringCloud：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8F%8A%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%EF%BC%9A"><span class="nav-number">1.1.6.</span> <span class="nav-text">服务拆分及远程调用：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E6%A1%88%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">分布式服务架构案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E8%80%85%E4%B8%8E%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">1.2.1.</span> <span class="nav-text">提供者与消费者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">1.3.</span> <span class="nav-text">eureka注册中心</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.1.</span> <span class="nav-text">远程调用的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eureka%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.3.2.</span> <span class="nav-text">Eureka的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eureka%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">1.3.3.</span> <span class="nav-text">eureka架构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%EF%BC%9A"><span class="nav-number">1.3.4.</span> <span class="nav-text">服务注册：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%8B%89%E5%8F%96%EF%BC%9A"><span class="nav-number">1.3.5.</span> <span class="nav-text">服务拉取：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ribbon%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">1.4.</span> <span class="nav-text">Ribbon负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">1.4.1.</span> <span class="nav-text">负载均衡策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A5%A5%E9%A5%BF%E5%8A%A0%E8%BD%BD%EF%BC%9A"><span class="nav-number">1.4.2.</span> <span class="nav-text">饥饿加载：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">1.5.</span> <span class="nav-text">Nacos注册中心</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nacos%E6%9C%8D%E5%8A%A1%E6%90%AD%E5%BB%BA"><span class="nav-number">1.5.1.</span> <span class="nav-text">Nacos服务搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E6%88%96%E5%8F%91%E7%8E%B0"><span class="nav-number">1.5.2.</span> <span class="nav-text">Nacos服务注册或发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nacos%E6%9C%8D%E5%8A%A1%E5%88%86%E7%BA%A7%E5%AD%98%E5%82%A8%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.3.</span> <span class="nav-text">Nacos服务分级存储模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%8E%9F%E7%90%86"><span class="nav-number">1.5.4.</span> <span class="nav-text">注册中心原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nacos%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="nav-number">1.5.5.</span> <span class="nav-text">Nacos配置管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.5.6.</span> <span class="nav-text">集群搭建步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E5%AE%A2%E6%88%B7%E7%AB%AFFeign"><span class="nav-number">1.6.</span> <span class="nav-text">http客户端Feign</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Feign%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.6.1.</span> <span class="nav-text">使用Feign的步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89Feign%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">1.6.2.</span> <span class="nav-text">自定义Feign的配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Feign%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">1.6.3.</span> <span class="nav-text">Feign的性能优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Feign%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.6.4.</span> <span class="nav-text">Feign的最佳实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E7%BD%91%E5%85%B3"><span class="nav-number">1.7.</span> <span class="nav-text">统一网关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E5%85%B3"><span class="nav-number">1.7.1.</span> <span class="nav-text">网关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E5%85%B3%E7%9A%84%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.7.2.</span> <span class="nav-text">网关的技术实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker"><span class="nav-number">1.8.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E8%AF%86docker"><span class="nav-number">1.8.1.</span> <span class="nav-text">初识docker</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%92%8C%E5%AE%B9%E5%99%A8"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">镜像和容器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Dcoker"><span class="nav-number">1.8.2.</span> <span class="nav-text">安装Dcoker</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8CentOS%E5%AE%89%E8%A3%85Docker"><span class="nav-number">1.8.2.1.</span> <span class="nav-text">在CentOS安装Docker</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8docker"><span class="nav-number">1.8.3.</span> <span class="nav-text">启动docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">1.8.4.</span> <span class="nav-text">Docker基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="nav-number">1.8.4.1.</span> <span class="nav-text">容器相关命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">1.8.4.2.</span> <span class="nav-text">操作数据卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">1.8.4.3.</span> <span class="nav-text">挂载数据卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dockerfile%E8%87%AA%E5%AE%9A%E4%B9%89%E9%95%9C%E5%83%8F"><span class="nav-number">1.8.4.4.</span> <span class="nav-text">Dockerfile自定义镜像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerCompose"><span class="nav-number">1.8.5.</span> <span class="nav-text">DockerCompose</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93"><span class="nav-number">1.8.6.</span> <span class="nav-text">Docker镜像仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%BC%82%E6%AD%A5%E9%80%9A%E8%AE%AF"><span class="nav-number">1.9.</span> <span class="nav-text">服务异步通讯</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E8%AF%86MQ"><span class="nav-number">1.9.1.</span> <span class="nav-text">初识MQ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RabbitMQ%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.9.2.</span> <span class="nav-text">RabbitMQ快速入门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringAMQP"><span class="nav-number">1.9.3.</span> <span class="nav-text">SpringAMQP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E3%80%81%E8%AE%A2%E9%98%85"><span class="nav-number">1.9.4.</span> <span class="nav-text">发布、订阅</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2"><span class="nav-number">1.10.</span> <span class="nav-text">分布式搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#elasticsearch"><span class="nav-number">1.10.1.</span> <span class="nav-text">elasticsearch:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%90%91%E7%B4%A2%E5%BC%95%E5%92%8C%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="nav-number">1.10.2.</span> <span class="nav-text">正向索引和倒排索引：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85es%EF%BC%9A"><span class="nav-number">1.10.3.</span> <span class="nav-text">安装es：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2kibana%EF%BC%9A"><span class="nav-number">1.10.4.</span> <span class="nav-text">部署kibana：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%BA%93%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="nav-number">1.10.5.</span> <span class="nav-text">索引库操作：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E5%BA%93"><span class="nav-number">1.10.5.1.</span> <span class="nav-text">创建索引库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E3%80%81%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95%E5%BA%93%EF%BC%9A"><span class="nav-number">1.10.5.2.</span> <span class="nav-text">查看、删除索引库：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%B4%A2%E5%BC%95%E5%BA%93%EF%BC%9A"><span class="nav-number">1.10.5.3.</span> <span class="nav-text">修改索引库：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="nav-number">1.10.6.</span> <span class="nav-text">文档操作：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E6%96%87%E6%A1%A3%EF%BC%9A"><span class="nav-number">1.10.6.1.</span> <span class="nav-text">新增文档：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%96%87%E6%A1%A3"><span class="nav-number">1.10.6.2.</span> <span class="nav-text">修改文档</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RestClient"><span class="nav-number">1.10.7.</span> <span class="nav-text">RestClient:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DSL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%B3%95%EF%BC%9A"><span class="nav-number">1.10.8.</span> <span class="nav-text">DSL查询语法：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E6%96%87%E6%A3%80%E7%B4%A2%E6%9F%A5%E8%AF%A2%EF%BC%9A"><span class="nav-number">1.10.8.1.</span> <span class="nav-text">全文检索查询：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B2%BE%E7%A1%AE%E6%9F%A5%E8%AF%A2%EF%BC%9A"><span class="nav-number">1.10.8.2.</span> <span class="nav-text">精确查询：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E7%BB%93%E6%9E%9C%E5%A4%84%E7%90%86%EF%BC%9A"><span class="nav-number">1.10.9.</span> <span class="nav-text">搜索结果处理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%81%9A%E5%90%88%EF%BC%9A"><span class="nav-number">1.10.10.</span> <span class="nav-text">数据聚合：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DSL%E5%AE%9E%E7%8E%B0Bucket%E8%81%9A%E5%90%88%EF%BC%9A"><span class="nav-number">1.10.10.1.</span> <span class="nav-text">DSL实现Bucket聚合：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8%EF%BC%9A"><span class="nav-number">1.10.10.2.</span> <span class="nav-text">自动补全：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%EF%BC%9A"><span class="nav-number">1.10.10.3.</span> <span class="nav-text">数据同步：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#elasticsearch%E9%9B%86%E7%BE%A4%EF%BC%9A"><span class="nav-number">1.10.11.</span> <span class="nav-text">elasticsearch集群：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%BF%9D%E6%8A%A4"><span class="nav-number">1.11.</span> <span class="nav-text">微服务保护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E8%AF%86Sentinel%EF%BC%9A"><span class="nav-number">1.11.1.</span> <span class="nav-text">初识Sentinel：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Sentinel%E6%8E%A7%E5%88%B6%E5%8F%B0%EF%BC%9A"><span class="nav-number">1.11.2.</span> <span class="nav-text">安装Sentinel控制台：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%95%B4%E5%90%88Sentinel%EF%BC%9A"><span class="nav-number">1.11.3.</span> <span class="nav-text">微服务整合Sentinel：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%90%E6%B5%81%E8%A7%84%E5%88%99%EF%BC%9A"><span class="nav-number">1.11.4.</span> <span class="nav-text">限流规则：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E5%92%8C%E9%99%8D%E7%BA%A7%EF%BC%9A"><span class="nav-number">1.11.5.</span> <span class="nav-text">隔离和降级：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%9A"><span class="nav-number">1.12.</span> <span class="nav-text">分布式事务：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A"><span class="nav-number">1.12.1.</span> <span class="nav-text">分布式事务模型：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E8%AF%86Seata%EF%BC%9A"><span class="nav-number">1.12.2.</span> <span class="nav-text">初识Seata：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2TC%EF%BC%9A"><span class="nav-number">1.12.3.</span> <span class="nav-text">部署TC：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%9B%86%E6%88%90Seata%EF%BC%9A"><span class="nav-number">1.12.4.</span> <span class="nav-text">微服务集成Seata：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E7%A7%8D%E6%A8%A1%E5%BC%8F%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.12.5.</span> <span class="nav-text">几种模式原理：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#XA%E6%A8%A1%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.12.5.1.</span> <span class="nav-text">XA模式：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AT%E6%A8%A1%E5%BC%8F%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.12.5.2.</span> <span class="nav-text">AT模式原理：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCC%E6%A8%A1%E5%BC%8F%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.12.5.3.</span> <span class="nav-text">TCC模式原理：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Saga%E6%A8%A1%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.12.5.4.</span> <span class="nav-text">Saga模式：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%EF%BC%9A"><span class="nav-number">1.13.</span> <span class="nav-text">分布式缓存：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E6%8C%81%E4%B9%85%E5%8C%96%EF%BC%9A"><span class="nav-number">1.13.1.</span> <span class="nav-text">Redis持久化：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB%E6%8C%81%E4%B9%85%E5%8C%96%EF%BC%9A"><span class="nav-number">1.13.1.1.</span> <span class="nav-text">RDB持久化：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.13.1.2.</span> <span class="nav-text">RDB原理：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF%E6%8C%81%E4%B9%85%E5%8C%96%EF%BC%9A"><span class="nav-number">1.13.1.3.</span> <span class="nav-text">AOF持久化：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E4%B8%BB%E4%BB%8E%EF%BC%9A"><span class="nav-number">1.13.2.</span> <span class="nav-text">Redis主从：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">1.13.2.1.</span> <span class="nav-text">搭建主从架构：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.13.2.2.</span> <span class="nav-text">数据同步原理：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E5%93%A8%E5%85%B5%EF%BC%9A"><span class="nav-number">1.13.3.</span> <span class="nav-text">Redis哨兵：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E7%9A%84%E4%BD%9C%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.13.3.1.</span> <span class="nav-text">哨兵的作用和原理：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E5%93%A8%E5%85%B5%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">1.13.3.2.</span> <span class="nav-text">搭建哨兵结构：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis-Template%E7%9A%84%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.13.3.3.</span> <span class="nav-text">Redis Template的哨兵模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4"><span class="nav-number">1.13.4.</span> <span class="nav-text">Redis分片集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%EF%BC%9A"><span class="nav-number">1.13.4.1.</span> <span class="nav-text">搭建分片集群：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4"><span class="nav-number">1.13.4.2.</span> <span class="nav-text">创建集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E6%8F%92%E6%A7%BD"><span class="nav-number">1.13.4.3.</span> <span class="nav-text">散列插槽</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB"><span class="nav-number">1.13.4.4.</span> <span class="nav-text">故障转移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RedisTemplate%E8%AE%BF%E9%97%AE%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4"><span class="nav-number">1.13.4.5.</span> <span class="nav-text">RedisTemplate访问分片集群</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">1.13.5.</span> <span class="nav-text">多级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JVM%E8%BF%9B%E7%A8%8B%E7%BC%93%E5%AD%98"><span class="nav-number">1.13.5.1.</span> <span class="nav-text">JVM进程缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lua%E8%AF%AD%E6%B3%95%E5%85%A5%E9%97%A8"><span class="nav-number">1.13.5.2.</span> <span class="nav-text">Lua语法入门</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98-1"><span class="nav-number">1.13.5.3.</span> <span class="nav-text">多级缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%90%8C%E6%AD%A5"><span class="nav-number">1.13.5.4.</span> <span class="nav-text">缓存同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Canal"><span class="nav-number">1.13.5.5.</span> <span class="nav-text">Canal</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Apollo"><span class="nav-number">2.</span> <span class="nav-text">配置中心Apollo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#application%E5%BA%94%E7%94%A8"><span class="nav-number">2.1.1.</span> <span class="nav-text">application应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#environment%E7%8E%AF%E5%A2%83"><span class="nav-number">2.1.2.</span> <span class="nav-text">environment环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cluster%E9%9B%86%E7%BE%A4"><span class="nav-number">2.1.3.</span> <span class="nav-text">cluster集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.1.4.</span> <span class="nav-text">namespace命名空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Apollo%E7%89%B9%E6%80%A7"><span class="nav-number">2.2.</span> <span class="nav-text">Apollo特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">2.2.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.2.2.</span> <span class="nav-text">客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">2.3.</span> <span class="nav-text">快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A5%E5%85%A5%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">2.3.1.</span> <span class="nav-text">客户端接入服务端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E7%9B%91%E6%8E%A7CAT"><span class="nav-number">3.</span> <span class="nav-text">应用监控CAT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cat%E6%8A%A5%E8%A1%A8%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.1.</span> <span class="nav-text">cat报表介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cat%E5%9F%BA%E7%A1%80"><span class="nav-number">3.2.</span> <span class="nav-text">cat基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux%E4%B8%8B%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.1.</span> <span class="nav-text">Linux下安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">数据库安装</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows%E4%B8%8B%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.2.</span> <span class="nav-text">windows下安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">配置环境变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%9B%86%E6%88%90%E7%AE%80%E5%8D%95%E6%A1%88%E4%BE%8B"><span class="nav-number">3.2.3.</span> <span class="nav-text">客户端集成简单案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E8%A1%A8%E7%B1%BB"><span class="nav-number">3.3.</span> <span class="nav-text">报表类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Transaction"><span class="nav-number">3.3.1.</span> <span class="nav-text">Transaction</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A9%E5%B1%95API"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">扩展API</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">乾</p>
+  <div class="site-description" itemprop="description">写一个赚乾的程序</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">乾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
