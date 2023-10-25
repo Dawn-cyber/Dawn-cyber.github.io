@@ -147,6 +147,107 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/26/Feign%E7%BB%84%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="乾">
+      <meta itemprop="description" content="写一个赚乾的程序">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序乾">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/10/26/Feign%E7%BB%84%E4%BB%B6/" class="post-title-link" itemprop="url">Feign组件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-26 00:10:55" itemprop="dateCreated datePublished" datetime="2023-10-26T00:10:55+08:00">2023-10-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Feign组件"><a href="#Feign组件" class="headerlink" title="Feign组件"></a>Feign组件</h1><h2 id="Feign介绍"><a href="#Feign介绍" class="headerlink" title="Feign介绍"></a>Feign介绍</h2><h3 id="java项目中接口调用"><a href="#java项目中接口调用" class="headerlink" title="java项目中接口调用"></a>java项目中接口调用</h3><p>1.Httpclient</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Apache Jakarta Common 下的子项目，用来提供高效、最新、丰富的支持Http协议的客户端编程工具包，并且支持HTTP协议最新版本和建议，HttpClient相比传统JDK自带的URLConnection，提升了易用性和灵活性，使得客户发送HTTP请求变得容易</span><br></pre></td></tr></table></figure>
+
+<p>2.Okhttp</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个处理网络请求的开源项目，是安卓端最火的轻量级框架，由Square公司贡献，用于代替HttpUrlConnection和Apache HttpClient，支持多种协议(Http/2和SPDY)</span><br></pre></td></tr></table></figure>
+
+<p>3.HttpURLConnection</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HttpURLConnection是java的标准类，它继承自URLConnection，用于向指定网站发送GET请求，HttpURLConnection使用比较复杂，不像HttpClient那样容易</span><br></pre></td></tr></table></figure>
+
+<p>4.RestTemplate</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RestTemplate是Spring提供的用于访问Rest服务器的客户端，RestTemplate提供了多种便捷访问远程HTTP服务的方法，能够大大提高客户端的编写效率</span><br></pre></td></tr></table></figure>
+
+<h3 id="什么是feign"><a href="#什么是feign" class="headerlink" title="什么是feign"></a>什么是feign</h3><p>声明式、模板化的HTTP客户端</p>
+<p>SpringCloud对Feign进行了增强，使其支持Spring MVC注解，还整合了Ribbon和Nacos，从而使得Feign的调用更简单</p>
+<h2 id="Feign配置"><a href="#Feign配置" class="headerlink" title="Feign配置"></a>Feign配置</h2><h3 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h3><p>在接口调用时，可以配置Feign的日志，以此把请求的信息输出出来</p>
+<p>1.定义一个配置类，指定日志级别</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class FeignConfig&#123;</span><br><span class="line">	@Bean</span><br><span class="line">	public Logger.Level feignLoggerLevel()&#123;</span><br><span class="line">		return Logger.Level.FULL;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NONE:不记录任何日志</span><br><span class="line">BASIC:仅仅记录请求方法，URL，响应状态码以及时间</span><br><span class="line">HEADERS:记录BASIC级别的基础上，记录请求和响应的header</span><br><span class="line">FULL:记录请求和响应的header、body和元数据</span><br></pre></td></tr></table></figure>
+
+<p>2.局部配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.将@Configuration注解去掉，在对应的@FeignClient(name=&quot;xx&quot;,configuration=FeignConfig)</span><br><span class="line">2.针对application.yml中配置feign.client.config.xxx(FeignClient的name).loggerLevel： BASIC</span><br></pre></td></tr></table></figure>
+
+<h3 id="超时时间配置"><a href="#超时时间配置" class="headerlink" title="超时时间配置"></a>超时时间配置</h3><p>1.全局配置</p>
+<p>通过Options可以配置连接超时时间和读取超时时间，Options的第一个参数就是连接的超时时间(ms)，默认值是2s；第二个是请求处理的超时时间(ms)，默认值是5s</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class FeignConfig&#123;</span><br><span class="line">	@Bean</span><br><span class="line">	public Request.Options options()&#123;</span><br><span class="line">		return new Request.options(5000,10000);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.在配置文件中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">	client:</span><br><span class="line">		config:</span><br><span class="line">			xxx-service(feign的name)：</span><br><span class="line">				connectTimeout: 5000</span><br><span class="line">				readTimeout: 3000</span><br><span class="line">			</span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义拦截器配置"><a href="#自定义拦截器配置" class="headerlink" title="自定义拦截器配置"></a>自定义拦截器配置</h3><p>拦截的是自己到服务端中间的过程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class FeignInterceptor implements RequestInterceptor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void apply(RequestTemplate template) &#123;</span><br><span class="line">        //to do something</span><br><span class="line">        template.uri(&quot;/testInterceptor&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在application.yml中配置拦截器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">feign.client.config.xxx(FeignClient的name).requestInterceptors[0]: com.qian.demo.interceptor</span><br></pre></td></tr></table></figure>
+
+<h2 id="Ribbon介绍"><a href="#Ribbon介绍" class="headerlink" title="Ribbon介绍"></a>Ribbon介绍</h2><h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>客户端负载均衡</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端会有一个服务器地址列表，在发送请求前通过负载均衡算法选择一个服务器，然后进行访问，这是客户端负载均衡</span><br></pre></td></tr></table></figure>
+
+<p>服务端负载均衡</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例如通过nginx进行负载均衡，然后通过负载均衡算法，在多个服务器之间选择一个进行访问，即在服务器端进行负载均衡</span><br></pre></td></tr></table></figure>
+
+<h3 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">随机：通过随机选择服务进行执行</span><br><span class="line">轮询：负载均衡默认实现方式，请求来之后排队轮询</span><br><span class="line">加权轮询：通过对服务器性能的分级，给不同性能的服务器分配不同的权重，均衡各个服务器的压力</span><br><span class="line">地址Hash：通过客户端请求的地址的Hash值取模映射进行服务器调度</span><br><span class="line">最小连接数：根据服务器的情况，将请求分配到当前压力最小的服务器上</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/13/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3602,7 +3703,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
